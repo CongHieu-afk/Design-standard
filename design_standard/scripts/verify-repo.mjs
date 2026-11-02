@@ -4,12 +4,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { validateManifest } from './governance-core.mjs';
+import { verifyCandidate } from './verify-candidate.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 export function verifyRepo() {
   const problems = [];
+  for (const problem of verifyCandidate(root)) problems.push(`Candidate guard: ${problem}`);
   const required = [
     'AGENTS.md', 'CONSTRAINTS.md', 'CLAUDE.md', 'GEMINI.md', 'package.json',
     '.github/CODEOWNERS', '.github/workflows/verify.yml', '.github/workflows/policy-guard.yml', 'docs/PROCESS.md',
@@ -34,16 +36,6 @@ export function verifyRepo() {
     try {
       for (const problem of validateManifest(JSON.parse(read(file)))) problems.push(`${file}: ${problem}`);
     } catch { /* lỗi JSON đã báo ở trên */ }
-  }
-
-  if (fs.existsSync(path.join(root, 'package.json'))) {
-    const scripts = JSON.parse(read('package.json')).scripts || {};
-    for (const name of ['test', 'check:policy', 'verify']) if (!scripts[name]) problems.push(`package.json thiếu script ${name}`);
-  }
-
-  if (fs.existsSync(path.join(root, '.github/workflows/verify.yml'))) {
-    const workflow = read('.github/workflows/verify.yml');
-    for (const marker of ['pull_request:', 'push:', 'npm run verify']) if (!workflow.includes(marker)) problems.push(`Workflow thiếu ${marker}`);
   }
 
   const gitignore = fs.existsSync(path.join(root, '.gitignore')) ? read('.gitignore') : '';

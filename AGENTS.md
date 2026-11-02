@@ -54,6 +54,7 @@ Không chạy lặp lại cùng lệnh nếu mã không đổi.
 - Làm trên nhánh ngắn `codex/*` hoặc nhánh người dùng chỉ định.
 - Chỉ commit file thuộc yêu cầu; xem staged diff và quét secret trước commit.
 - Không dùng `--no-verify`, biến bỏ qua gate, force-push hoặc sửa workflow/checker để tự cho PR xanh.
-- `main` phải bảo vệ bằng required CI + ít nhất một review; file policy/checker/workflow cần CODEOWNER review.
+- `main` phải yêu cầu `verify` + `guard`, nhánh cập nhật, áp dụng cho admin; cấm force-push và xóa nhánh.
+- Khi có reviewer độc lập: thêm họ vào `CODEOWNERS`, rồi mới bật một approval mới nhất + CODEOWNER review. Repo một maintainer không được giả vờ đã có review độc lập; ghi đây là rủi ro còn lại và không tự đóng G5.
 
 Chi tiết kỹ thuật nằm trong `design_standard/`; khi tài liệu chi tiết mâu thuẫn file này, file này thắng.

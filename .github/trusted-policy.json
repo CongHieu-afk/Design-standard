@@ -2,21 +2,12 @@
   "version": 1,
   "files": {
     ".npmrc": ["sha256:b962362e-be7560b5-34e834c2-ede51186-c2e3fceb-94e12cc4-34a11180-f22391f2"],
-    ".github/workflows/policy-guard.yml": [
-      "sha256:3689fd04-66b5a171-52e43cb6-4b214017-ec94d60a-32231785-8be1f87b-c447f9c5",
-      "sha256:b1623884-f453d629-a7250f89-dbd74bb6-88c1e077-1ce5747a-be81421a-5481ebf2"
-    ],
-    ".github/workflows/verify.yml": [
-      "sha256:b80f2b59-c1647e1a-7196bae6-2b0e0c05-442b3730-d1151dc5-bbdc1c69-b9b79859",
-      "sha256:b676055b-59116740-9a62aee2-9ee8b5b6-b206556b-37a5cfff-492a5bc2-4c1397af"
-    ],
+    ".github/workflows/policy-guard.yml": ["sha256:b1623884-f453d629-a7250f89-dbd74bb6-88c1e077-1ce5747a-be81421a-5481ebf2"],
+    ".github/workflows/verify.yml": ["sha256:b676055b-59116740-9a62aee2-9ee8b5b6-b206556b-37a5cfff-492a5bc2-4c1397af"],
     "design_standard/scripts/audit.mjs": ["sha256:b514f366-80435fc2-113c503f-a2e9f637-563d02d3-cd4da30a-20c619aa-d13806d8"],
     "design_standard/scripts/check_gates.mjs": ["sha256:46eb99a1-4f91d560-a1193d04-23f5f77a-d3a1456d-dc4ecf1c-91866c0c-b1908b8d"],
     "design_standard/scripts/check_tokens.mjs": ["sha256:58975968-9eb71d1e-bc898488-47e06490-7a4faa41-d19dd944-18b9a4ff-d8f099a0"],
-    "design_standard/scripts/ci/ui-standard.github.yml": [
-      "sha256:8d124591-eef08de4-1aecdeac-ca3c561f-076ad330-6cd9c3ab-604e80d8-725bf454",
-      "sha256:8413537e-032fa002-b505af2a-e966d75e-b8f627e1-86005c6e-5691cdbf-64fbd80e"
-    ],
+    "design_standard/scripts/ci/ui-standard.github.yml": ["sha256:8413537e-032fa002-b505af2a-e966d75e-b8f627e1-86005c6e-5691cdbf-64fbd80e"],
     "design_standard/scripts/governance-core.mjs": ["sha256:1a88d23b-fffa18d7-9a3e7a3b-a8185e35-a8ac2be3-5c7e3580-2b96b52e-6a720c86"],
     "design_standard/scripts/verify-candidate.mjs": ["sha256:22818e21-fab47e59-ef7af83c-dbdaff49-60f821c2-46851926-dd503a70-61650670"],
     "design_standard/scripts/verify-project.mjs": ["sha256:283e173e-50e2f35c-209527be-0a1325aa-bfb6e38c-4bf2e09b-84bc1448-8c8b2601"],

@@ -2,7 +2,7 @@
 
 - Agent: Codex
 - Phạm vi: hợp nhất policy, verifier, CI, motion runtime và test assertion
-- Nhánh hiện tại: `codex/adversarial-governance-audit`
+- Nhánh hiện tại: `codex/governance-bootstrap-clean`; PR #3
 
 ## Đã làm
 
@@ -33,6 +33,7 @@
 - Policy/docs tách đúng chế độ solo và có reviewer độc lập; CODEOWNERS phủ toàn repo nhưng không bật required review khi chỉ có một maintainer.
 - `npm run verify`: 20/20 test đạt; policy và syntax đạt. `git diff --check`: đạt.
 - Codex CLI vòng cuối: không còn finding chặn merge. Gemini CLI 0.66.0 không chạy review được vì Google trả `UNSUPPORTED_CLIENT` và yêu cầu chuyển sang Antigravity; không tính là review thành công.
+- PR #3: `guard`, `verify`, GitGuardian đều đạt. Required `verify`/`guard` đã pin vào GitHub Actions app ID 15368.
 
 ## Còn ngoài repo
 

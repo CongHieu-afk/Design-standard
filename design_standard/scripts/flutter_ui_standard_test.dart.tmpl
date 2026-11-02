@@ -1,0 +1,135 @@
+// MẪU widget test theo design_standard (08 §1, F1–F6). Sao chép thành
+// test/ui_standard/<id>_test.dart, chép thêm scripts/flutter_text_contrast_scan.dart
+// thành test/ui_standard/text_contrast_scan.dart, thay <...>, rồi chạy: flutter test test/ui_standard/
+//
+// Đã chạy thử một lần trên CareAI/companion_app (Flutter 3.47.5, 28/10/2026); các bài học F-a…F-e
+// (DANH_GIA_CONG_CU_VA_QUY_TRINH_2026-10.md §3) đã đưa vào mẫu. Kiểm lại tên API theo phiên bản Flutter của dự án. [kiểm lại: 2027-04]
+//
+// Nguyên tắc:
+// - Bơm MÀN HÌNH THẬT của app với harness GIỐNG main.dart (cùng ThemeData; Localizations chỉ khi app có).
+// - Nạp font thật của app — không nạp thì test đo bằng font Ahem, số đo tương phản/tràn chữ sai.
+// - Bộ kiểm của Flutter chỉ thấy phần đang vẽ trong khung: dựng khung đủ cao để cả màn hình hiện ra
+//   (mountWhole kiểm maxScrollExtent == 0). Màn hình quá dài: kiểm theo từng đoạn cuộn.
+// - Ngưỡng theo hạng (02 §1): A → vùng chạm 48dp + tương phản AAA; B/C → 44pt + AA.
+// - textContrastGuideline BỎ QUA im lặng chữ có ngữ nghĩa bị gộp → luôn chạy thêm scanTextContrast.
+// - textScaler 2.0 không được tràn/cắt (blocker trên điện thoại). Đồng hồ: dùng cỡ chữ lớn nhất của hệ thống thay vì 2.0.
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+// Chỉ khi app dùng flutter_localizations (kiểm pubspec.yaml và main.dart):
+// import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:<app>/theme.dart';            // ThemeData của dự án
+// import 'package:<app>/screens/<screen>.dart'; // màn hình thật
+
+import 'text_contrast_scan.dart';
+
+const String screenId = '<id>'; // khớp id trong design.config.json
+const String tier = 'A'; // A | B | C
+const Size phone = Size(360, 800); // khung cho textScaler và golden
+const Size tall = Size(360, 1600); // khung đủ cao cho kiểm vùng chạm/tương phản
+
+Widget harness({required Widget child, double textScale = 1.0, ThemeMode mode = ThemeMode.light}) {
+  return MaterialApp(
+    debugShowCheckedModeBanner: false,
+    // theme: appLightTheme, darkTheme: appDarkTheme,   // đúng như main.dart
+    themeMode: mode,
+    // Chỉ khi app có Localizations:
+    // locale: const Locale('vi'),
+    // supportedLocales: const [Locale('vi'), Locale('en')],
+    // localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+    builder: (context, app) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+      child: app!,
+    ),
+    home: child,
+  );
+}
+
+Widget buildScreen() => const Placeholder(); // TODO: màn hình thật với dữ liệu mẫu thật (không lorem, không dữ liệu cá nhân thật)
+
+Future<void> loadFonts() async {
+  // TODO: thay bằng font khai báo trong pubspec.yaml của app.
+  // final loader = FontLoader('<Family>');
+  // for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold']) {
+  //   loader.addFont(rootBundle.load('assets/fonts/<family>/<Family>-$w.ttf'));
+  // }
+  // await loader.load();
+  final icons = FontLoader('MaterialIcons')..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
+  await icons.load();
+}
+
+Future<void> mountWhole(WidgetTester tester, ThemeMode mode) async {
+  await tester.binding.setSurfaceSize(tall);
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+  await tester.pumpWidget(harness(child: buildScreen(), mode: mode));
+  // Màn hình có vòng xoay chạy mãi (đang tải) làm pumpAndSettle hết giờ: cấp dữ liệu mẫu xong, hoặc thay bằng pump(Duration(seconds: 1)).
+  await tester.pumpAndSettle();
+  // Chỉ xét cuộn DỌC của trang: bỏ danh sách ngang, PageView/TabBarView và Scrollable bên trong ô nhập (EditableText).
+  final inEditable = find.descendant(of: find.byType(EditableText), matching: find.byType(Scrollable)).evaluate().toSet();
+  for (final e in find.byType(Scrollable).evaluate()) {
+    if (inEditable.contains(e)) continue;
+    final state = (e as StatefulElement).state as ScrollableState;
+    if (axisDirectionToAxis(state.axisDirection) != Axis.vertical) continue;
+    expect(state.position.maxScrollExtent, 0,
+        reason: 'Còn ${state.position.maxScrollExtent}px ngoài khung, chưa được quét — tăng "tall" hoặc kiểm theo đoạn cuộn');
+  }
+}
+
+void main() {
+  setUpAll(loadFonts);
+
+  // darkMode: true trong design.config.json → bỏ chú thích ThemeMode.dark VÀ đặt darkTheme trong harness; không thì "dark" chỉ đo lại bản sáng.
+  for (final mode in [ThemeMode.light /*, ThemeMode.dark */]) {
+    group('$screenId · ${mode.name}', () {
+      testWidgets('F3/F4 vùng chạm theo hạng, nhãn', (tester) async {
+        await mountWhole(tester, mode);
+        if (tier == 'A') {
+          await expectLater(tester, meetsGuideline(androidTapTargetGuideline)); // 48x48dp
+        } else {
+          await expectLater(tester, meetsGuideline(iOSTapTargetGuideline)); // 44x44pt
+        }
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      });
+
+      testWidgets('F2 tương phản chữ theo hạng', (tester) async {
+        await mountWhole(tester, mode);
+        if (tier == 'A') {
+          await expectLater(tester, meetsGuideline(const MinimumTextContrastGuidelineAAA())); // 7:1 / 4.5:1
+        } else {
+          await expectLater(tester, meetsGuideline(textContrastGuideline)); // 4.5:1 / 3:1
+        }
+      });
+
+      testWidgets('F2 tương phản từng đoạn chữ (quét bổ sung)', (tester) async {
+        await mountWhole(tester, mode);
+        final scan = tier == 'A' ? await scanTextContrast(tester, normal: 7.0, large: 4.5) : await scanTextContrast(tester);
+        debugPrint('${scan.length} đoạn chữ:\n${scan.join('\n')}');
+        final failed = scan.where((f) => !f.passed).toList();
+        expect(failed, isEmpty, reason: failed.join('\n'));
+      });
+
+      // takeException chỉ bắt lỗi bố cục (RenderFlex overflow); chữ bị cắt bằng ellipsis/clip phải xem ở golden ts2.0.
+      testWidgets('F5 textScaler 2.0 không lỗi bố cục', (tester) async {
+        await tester.binding.setSurfaceSize(phone);
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        await tester.pumpWidget(harness(child: buildScreen(), textScale: 2.0, mode: mode));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: 'RenderFlex overflow hoặc lỗi bố cục ở textScaler 2.0');
+      });
+
+      // F6 (major): golden. Lần đầu tạo bằng `flutter test --update-goldens` CHỈ sau khi người duyệt (01 §4)
+      // đã xem ảnh và ghi chấp nhận vào biên bản; golden đầu tiên chụp màn hình còn lỗi sẽ khoá lỗi lại.
+      // Về sau chỉ cập nhật khi đổi hình có chủ ý, kèm ảnh trước/sau — không cập nhật để che lỗi (AGENTS §4 luật 2).
+      for (final scale in [1.0, 2.0]) {
+        testWidgets('F6 golden textScaler $scale', (tester) async {
+          await tester.binding.setSurfaceSize(phone);
+          addTearDown(() => tester.binding.setSurfaceSize(null));
+          await tester.pumpWidget(harness(child: buildScreen(), textScale: scale, mode: mode));
+          await tester.pumpAndSettle();
+          await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/${screenId}_${mode.name}_ts$scale.png'));
+        });
+      }
+    });
+  }
+}

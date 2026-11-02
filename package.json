@@ -1,0 +1,17 @@
+{
+  "name": "@conghieu/design-standard",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test",
+    "check:policy": "node design_standard/scripts/verify-repo.mjs",
+    "check:syntax": "node --check design_standard/scripts/audit.mjs && node --check design_standard/scripts/check_gates.mjs && node --check design_standard/scripts/check_tokens.mjs && node --check design_standard/scripts/prepush.mjs && node --check design_standard/scripts/verify-project.mjs && node --check design_standard/scripts/verify-candidate.mjs && node --check design_standard/scripts/verify-repo.mjs && node --check design_standard/runtime/motion.js && node --check design_standard/runtime/lifecycle.js && node --check design_standard/runtime/primitives.js",
+    "verify": "npm run test && npm run check:policy && npm run check:syntax"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "playwright": "1.59.1"
+  }
+}

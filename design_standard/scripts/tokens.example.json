@@ -1,0 +1,98 @@
+{
+  "_ghi_chu": "MẪU CẤU TRÚC, KHÔNG PHẢI BẢNG MÀU. Màu placeholder trung tính để chạy script; đừng đưa vào sản phẩm. Cặp không có \"screens\" được kiểm ở hạng cao nhất trong config; cặp có \"screens\" kiểm theo hạng của các màn hình đó.",
+  "color": {
+    "primitive": {
+      "white": "#ffffff",
+      "gray-50": "#f5f5f5",
+      "gray-600": "#595959",
+      "gray-700": "#4d4d4d",
+      "gray-900": "#111111",
+      "blue-700": "#0047d6",
+      "blue-50": "#eaf1ff",
+      "black": "#000000",
+      "white-10": "rgba(255, 255, 255, 0.10)",
+      "gray-dark-200": "oklch(85% 0 0)",
+      "blue-dtcg": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0.278,
+            0.839
+          ],
+          "hex": "#0047d6"
+        }
+      }
+    },
+    "bg": {
+      "canvas": "{color.primitive.gray-50}",
+      "surface": "{color.primitive.white}",
+      "accent-soft": "{color.primitive.blue-50}"
+    },
+    "text": {
+      "primary": {
+        "$value": "{color.primitive.gray-900}"
+      },
+      "secondary": "{color.primitive.gray-700}",
+      "on-accent": "{color.primitive.white}",
+      "accent": "{color.primitive.blue-700}"
+    },
+    "border": {
+      "control": "{color.primitive.gray-600}"
+    },
+    "action": {
+      "primary": "{color.primitive.blue-700}"
+    },
+    "dark": {
+      "canvas": "{color.primitive.black}",
+      "raised": "{color.primitive.white-10}",
+      "text": "{color.primitive.gray-dark-200}"
+    }
+  },
+  "pairs": {
+    "light": [
+      {
+        "fg": "{color.text.primary}",
+        "bg": "{color.bg.canvas}",
+        "kind": "text"
+      },
+      {
+        "fg": "{color.text.secondary}",
+        "bg": "{color.bg.canvas}",
+        "kind": "text"
+      },
+      {
+        "fg": "{color.text.on-accent}",
+        "bg": "{color.action.primary}",
+        "kind": "text"
+      },
+      {
+        "fg": "{color.text.accent}",
+        "bg": "{color.bg.accent-soft}",
+        "kind": "text",
+        "screens": [
+          "home"
+        ]
+      },
+      {
+        "fg": "{color.border.control}",
+        "bg": "{color.bg.surface}",
+        "kind": "non-text"
+      },
+      {
+        "fg": "{color.text.on-accent}",
+        "bg": "{color.primitive.blue-dtcg}",
+        "kind": "text"
+      }
+    ],
+    "dark": [
+      {
+        "fg": "{color.dark.text}",
+        "bg": "{color.dark.raised}",
+        "under": "{color.dark.canvas}",
+        "kind": "text"
+      }
+    ]
+  }
+}

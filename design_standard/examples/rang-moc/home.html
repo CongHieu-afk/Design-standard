@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rang Mộc · Cà phê rang thứ Ba, gửi đi thứ Tư</title>
+<meta name="description" content="Trang mẫu tham chiếu của bộ chuẩn design_standard. Thương hiệu và số liệu là hư cấu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  TRANG MẪU THAM CHIẾU (design_standard/examples/rang-moc). Thương hiệu "Rang Mộc", sản phẩm, giá và số liệu mẻ rang là HƯ CẤU.
+  Hướng thị giác: xem direction.md. Quyết định đặc trưng: đường nhiệt mẻ rang (dữ liệu thật của từng mẻ) xuất hiện ở hero, ở từng sản phẩm và ở trang quản trị.
+-->
+<style>
+:root {
+  --ink: #15181a; --ink-2: #4a5157; --ink-3: #6b7279;
+  --ground: #f3f4f1; --surface: #ffffff; --line: #d5d8d3;
+  --accent: #11553f; --accent-soft: #e3eee9; --signal: #b42318;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius: 4px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-body); font-size: 1rem; line-height: 1.6; font-variation-settings: "wdth" 100; }
+::selection { background: var(--accent); color: #fff; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.skip { position: absolute; left: var(--space-4); top: -100px; background: var(--surface); padding: 0 var(--space-4); min-height: 44px; display: inline-flex; align-items: center; }
+.skip:focus { top: var(--space-4); }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); }
+
+header.site { background: var(--ground); }
+header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); min-height: 64px; flex-wrap: wrap; }
+.wordmark { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--font-display); font-variation-settings: "wdth" 125; font-weight: 800; font-size: 1.25rem; letter-spacing: 0; color: var(--ink); text-decoration: none; line-height: 1.3; }
+nav.primary ul { display: flex; gap: var(--space-2); list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+nav.primary a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-3); color: var(--ink); text-decoration: none; font-weight: 500; line-height: 1.4; }
+nav.primary a:hover { text-decoration: underline; }
+nav.primary a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; }
+
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-12); align-items: center; padding-top: var(--space-16); padding-bottom: var(--space-16); }
+h1 { font-family: var(--font-display); font-variation-settings: "wdth" 80; font-weight: 750; font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem); line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 var(--space-6); text-wrap: balance; }
+.lede { font-size: 1.125rem; color: var(--ink-2); max-width: 46ch; margin: 0 0 var(--space-8); }
+.actions > a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; }
+.actions { display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: center; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 var(--space-6); border-radius: var(--radius); font: inherit; font-weight: 600; line-height: 1.4; cursor: pointer; text-decoration: none; transition: background-color .15s ease-out; }
+.btn-primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+.btn-primary:hover { background: #0c3f2f; }
+.btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--ink-3); }
+.btn-secondary:hover { background: var(--surface); }
+
+.batch-card { margin: 0; background: var(--surface); border: 1px solid var(--line); padding: var(--space-6); }
+.batch-head { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.batch-head h2 { font-size: 1rem; font-weight: 700; margin: 0; line-height: 1.4; }
+.batch-head p { margin: 0; color: var(--ink-2); font-size: .875rem; }
+.num, .tick, .note, .batch-stats dd { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.curve { width: 100%; height: auto; display: block; }
+.curve .grid { stroke: var(--line); stroke-width: 1; }
+.curve .tick { fill: var(--ink-2); font-size: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.curve .note { fill: var(--ink); font-size: 12px; }
+.batch-stats .fc dt::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--signal); margin-right: 6px; vertical-align: 1px; }
+.curve .bt, .mini .bt { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.curve .fc-rule { stroke: var(--signal); stroke-width: 1; stroke-dasharray: 3 3; }
+.fc-dot { fill: var(--signal); }
+.drop-dot { fill: var(--ink); }
+.batch-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); margin: var(--space-4) 0 0; border-top: 1px solid var(--line); padding-top: var(--space-4); }
+.batch-stats dt { font-size: .8125rem; color: var(--ink-2); line-height: 1.4; }
+.batch-stats dd { margin: 0; font-size: 1rem; }
+
+section.block { padding: var(--space-16) 0; }
+section.block.alt { background: var(--surface); }
+.block-stack { display: grid; gap: var(--space-8); } .block-stack > div:first-child { max-width: 40rem; }
+.block-head { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-12); }
+h2.section { font-family: var(--font-display); font-variation-settings: "wdth" 85; font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.25; margin: 0; font-weight: 700; }
+.block-intro { color: var(--ink-2); margin: var(--space-3) 0 0; max-width: 40ch; }
+
+.beans { list-style: none; margin: 0; padding: 0; }
+.bean { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 3fr) minmax(0, 2fr) minmax(0, 2fr) auto; gap: var(--space-6); align-items: center; padding: var(--space-6) 0; border-bottom: 1px solid var(--line); }
+.bean:first-child { border-top: 1px solid var(--ink); }
+.bean h3 { font-size: 1.125rem; margin: 0; line-height: 1.35; font-weight: 700; }
+.bean .meta, .bean .notes { margin: 0; color: var(--ink-2); font-size: .9375rem; }
+.bean .notes { color: var(--ink); }
+.mini { margin: 0; }
+.mini svg { width: 120px; height: 40px; display: block; }
+.mini figcaption { font-size: .8125rem; color: var(--ink-2); line-height: 1.4; }
+.price { margin: 0; text-align: right; }
+.price .num { display: block; white-space: nowrap; }
+.price .unit { display: block; color: var(--ink-2); font-size: .875rem; }
+
+.timetable { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.timetable caption { text-align: left; color: var(--ink-2); padding-bottom: var(--space-3); }
+.timetable th, .timetable td { text-align: left; padding: var(--space-3) var(--space-4) var(--space-3) 0; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+.timetable th[scope="col"] { font-weight: 600; color: var(--ink-2); font-size: .8125rem; border-bottom: 1px solid var(--ink); }
+.timetable td.num { white-space: nowrap; }
+
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+.plan { padding: var(--space-6); background: var(--surface); border-radius: var(--radius); }
+
+.plan h3 { margin: 0 0 var(--space-2); font-size: 1.125rem; line-height: 1.35; }
+.plan p { margin: 0 0 var(--space-4); color: var(--ink-2); }
+.plan .total { color: var(--ink); font-size: 1.25rem; }
+.fineprint { font-size: .875rem; color: var(--ink-2); margin-top: var(--space-4); max-width: 70ch; }
+
+footer.site { padding: var(--space-8) 0 var(--space-12); font-size: .9375rem; color: var(--ink-2); }
+footer.site .wrap { display: flex; gap: var(--space-8); flex-wrap: wrap; justify-content: space-between; }
+footer.site p { margin: 0; }
+
+@media (max-width: 960px) {
+  .hero .wrap, .block-head { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+  .bean { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name price" "notes notes" "mini btn"; gap: var(--space-3) var(--space-4); }
+  .bean-name { grid-area: name; } .bean .notes { grid-area: notes; } .mini { grid-area: mini; } .price { grid-area: price; } .bean .btn { grid-area: btn; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 var(--space-4); }
+  .plans { grid-template-columns: minmax(0, 1fr); }
+  .timetable, .timetable tbody, .timetable tr, .timetable td, .timetable th[scope="row"] { display: block; }
+  .timetable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .timetable tr { border-bottom: 1px solid var(--line); padding: var(--space-3) 0; }
+  .timetable td, .timetable th[scope="row"] { border: 0; padding: 0; }
+  .timetable td.num { white-space: normal; }
+  .timetable caption { display: block; }
+  .batch-card { padding: var(--space-4); }
+  .batch-stats { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+  .batch-stats div { display: flex; justify-content: space-between; gap: var(--space-4); }
+  .curve .tick { font-size: 22px; }
+  nav.primary a { padding: 0 var(--space-2); }
+  .curve .note { display: none; }
+  .timetable td::before { content: attr(data-label) " · "; color: var(--ink-2); }
+}
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Bỏ qua tới nội dung chính</a>
+<header class="site">
+  <div class="wrap">
+    <a class="wordmark" href="#main">Rang Mộc</a>
+    <nav class="primary" aria-label="Chính">
+      <ul>
+        <li><a href="#ca-phe" aria-current="page">Cà phê</a></li>
+        <li><a href="#lich-rang">Lịch rang</a></li>
+        <li><a href="#dinh-ky">Gói định kỳ</a></li>
+        <li><a href="#ca-phe" >Giỏ<span class="sr-only"> hàng</span>&nbsp;(0)</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <h1 id="hero-title">Mỗi thứ Ba chúng tôi rang 6 mẻ. Sáng thứ Tư, hạt rời xưởng.</h1>
+        <p class="lede">Lò rang nhỏ ở Đà Lạt. Mỗi túi ghi số mẻ; bạn tra được đường nhiệt của đúng mẻ đó, lúc nổ lần một và lúc ra lò.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#ca-phe">Chọn cà phê</a>
+          <a href="#lich-rang">Xem lịch rang tuần này</a>
+        </div>
+      </div>
+      <figure class="batch-card" aria-labelledby="batch-title">
+        <div class="batch-head">
+          <h2 id="batch-title">Mẻ 42 · Cầu Đất Washed</h2>
+          <p class="num">Rang 27/10/2026 · 5,0 kg</p>
+        </div>
+        <svg viewBox="0 0 560 300" role="img" aria-labelledby="curve-title curve-desc" class="curve">
+  <title id="curve-title">Đường nhiệt mẻ 42, Arabica Cầu Đất, rang ngày 27/10/2026</title>
+  <desc id="curve-desc">Nhiệt độ hạt giảm từ 200 °C xuống 95 °C ở phút 1:30, tăng dần, nổ lần một ở phút 8:40 khi hạt đạt 199 °C, ra lò ở phút 10:55 khi đạt 209 °C.</desc>
+  <line x1="64" x2="540" y1="225.1" y2="225.1" class="grid"/><text x="56" y="229.1" class="tick" text-anchor="end">100°</text><line x1="64" x2="540" y1="155.4" y2="155.4" class="grid"/><text x="56" y="159.4" class="tick" text-anchor="end">140°</text><line x1="64" x2="540" y1="85.7" y2="85.7" class="grid"/><text x="56" y="89.7" class="tick" text-anchor="end">180°</text><line x1="64" x2="540" y1="16.0" y2="16.0" class="grid"/><text x="56" y="20.0" class="tick" text-anchor="end">220°</text><text x="64.0" y="288" class="tick" text-anchor="middle">0’</text><text x="143.3" y="288" class="tick" text-anchor="middle">2’</text><text x="222.7" y="288" class="tick" text-anchor="middle">4’</text><text x="302.0" y="288" class="tick" text-anchor="middle">6’</text><text x="381.3" y="288" class="tick" text-anchor="middle">8’</text><text x="460.7" y="288" class="tick" text-anchor="middle">10’</text><text x="540.0" y="288" class="tick" text-anchor="middle">12’</text>
+  <line x1="407.9" x2="407.9" y1="52.6" y2="260" class="fc-rule"/>
+  <path d="M64.0 50.9 L73.0 126.2 L82.0 171.6 L91.1 199.0 L100.1 215.5 L109.1 225.5 L118.1 231.5 L127.2 230.6 L136.2 222.5 L145.2 214.6 L154.2 206.9 L163.3 199.3 L172.3 191.8 L181.3 184.5 L190.3 177.3 L199.4 170.3 L208.4 163.4 L217.4 156.6 L226.4 150.1 L235.5 143.6 L244.5 137.3 L253.5 131.2 L262.5 125.2 L271.6 119.4 L280.6 113.8 L289.6 108.3 L298.6 103.0 L307.7 97.8 L316.7 92.8 L325.7 88.0 L334.7 83.4 L343.7 78.9 L352.8 74.6 L361.8 70.5 L370.8 66.6 L379.8 62.9 L388.9 59.4 L397.9 56.0 L406.9 52.9 L415.9 50.0 L425.0 47.3 L434.0 44.9 L443.0 42.6 L452.0 40.6 L461.1 38.9 L470.1 37.5 L479.1 36.3 L488.1 35.5 L497.2 35.2" class="bt"/>
+  <circle cx="407.9" cy="52.6" r="5" class="fc-dot"/>
+  <text x="399.9" y="155.4" class="note" text-anchor="end">Nổ lần 1 · 8:40</text>
+  <circle cx="497.2" cy="35.2" r="4" class="drop-dot"/>
+  <text x="487.2" y="27.2" class="note" text-anchor="end">Ra lò · 10:55</text>
+</svg>
+        <dl class="batch-stats">
+          <div><dt>Điểm đáy</dt><dd>95° · 1:30</dd></div>
+          <div class="fc"><dt>Nổ lần 1</dt><dd>199° · 8:40</dd></div>
+          <div><dt>Phát triển</dt><dd>2:15 · 20,6%</dd></div>
+        </dl>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block" id="ca-phe" aria-labelledby="beans-title">
+    <div class="wrap block-head">
+      <div>
+        <h2 class="section" id="beans-title">Cà phê đang bán</h2>
+        <p class="block-intro">Bốn loại cho tuần này. Đường nhỏ cạnh mỗi loại là đường nhiệt của mẻ gần nhất; chấm đỏ là lúc nổ lần một.</p>
+      </div>
+      <ul class="beans">
+      <li class="bean">
+        <div class="bean-name">
+          <h3>Cầu Đất</h3>
+          <p class="meta">Washed · Arabica, Lâm Đồng, 1.600 m</p>
+        </div>
+        <p class="notes">Chanh vàng, trà đen, mật ong</p>
+        <figure class="mini">
+          <svg viewBox="0 0 120 40" aria-hidden="true"><path d="M2.0 8.6 L5.9 23.4 L9.9 29.4 L13.8 31.8 L17.8 31.9 L21.7 29.9 L25.7 28.0 L29.6 26.1 L33.6 24.3 L37.5 22.6 L41.5 21.0 L45.4 19.4 L49.4 18.0 L53.3 16.6 L57.3 15.3 L61.2 14.1 L65.2 12.9 L69.1 11.9 L73.0 11.0 L77.0 10.2 L80.9 9.4 L84.9 8.8 L88.8 8.4 L92.8 8.0 L96.7 7.9" class="bt"/><circle cx="80.3" cy="9.6" r="2.5" class="fc-dot"/></svg>
+          <figcaption>Rang sáng · ra lò 203°</figcaption>
+        </figure>
+        <p class="price"><span class="num">185.000&nbsp;₫</span><span class="unit">túi 250 g</span></p>
+        <button type="button" class="btn btn-secondary" >Thêm vào giỏ<span class="sr-only">: Cầu Đất Washed</span></button>
+      </li>
+      <li class="bean">
+        <div class="bean-name">
+          <h3>Măng Đen</h3>
+          <p class="meta">Honey · Arabica, Kon Tum, 1.200 m</p>
+        </div>
+        <p class="notes">Mận chín, đường nâu, ca cao</p>
+        <figure class="mini">
+          <svg viewBox="0 0 120 40" aria-hidden="true"><path d="M2.0 8.6 L6.3 24.1 L10.5 30.0 L14.8 32.1 L19.1 31.3 L23.3 29.3 L27.6 27.3 L31.9 25.4 L36.2 23.6 L40.4 21.9 L44.7 20.2 L49.0 18.7 L53.2 17.2 L57.5 15.8 L61.8 14.5 L66.0 13.2 L70.3 12.1 L74.6 11.1 L78.8 10.1 L83.1 9.3 L87.4 8.5 L91.7 7.9 L95.9 7.5 L100.2 7.1 L104.5 7.0" class="bt"/><circle cx="84.2" cy="9.1" r="2.5" class="fc-dot"/></svg>
+          <figcaption>Rang vừa · ra lò 207°</figcaption>
+        </figure>
+        <p class="price"><span class="num">175.000&nbsp;₫</span><span class="unit">túi 250 g</span></p>
+        <button type="button" class="btn btn-secondary" >Thêm vào giỏ<span class="sr-only">: Măng Đen Honey</span></button>
+      </li>
+      <li class="bean">
+        <div class="bean-name">
+          <h3>Khe Sanh</h3>
+          <p class="meta">Natural · Arabica, Quảng Trị, 600 m</p>
+        </div>
+        <p class="notes">Nho khô, sô-cô-la sữa</p>
+        <figure class="mini">
+          <svg viewBox="0 0 120 40" aria-hidden="true"><path d="M2.0 8.6 L6.4 24.4 L10.8 30.2 L15.2 32.3 L19.6 31.1 L24.0 29.0 L28.3 27.1 L32.7 25.2 L37.1 23.3 L41.5 21.6 L45.9 19.9 L50.3 18.3 L54.7 16.8 L59.1 15.4 L63.5 14.1 L67.9 12.8 L72.2 11.7 L76.6 10.6 L81.0 9.7 L85.4 8.8 L89.8 8.1 L94.2 7.5 L98.6 7.0 L103.0 6.7 L107.4 6.5" class="bt"/><circle cx="86.1" cy="8.7" r="2.5" class="fc-dot"/></svg>
+          <figcaption>Rang vừa · ra lò 209°</figcaption>
+        </figure>
+        <p class="price"><span class="num">165.000&nbsp;₫</span><span class="unit">túi 250 g</span></p>
+        <button type="button" class="btn btn-secondary" >Thêm vào giỏ<span class="sr-only">: Khe Sanh Natural</span></button>
+      </li>
+      <li class="bean">
+        <div class="bean-name">
+          <h3>Đắk Hà</h3>
+          <p class="meta">Robusta Fine · Robusta, Kon Tum, 650 m</p>
+        </div>
+        <p class="notes">Hạt dẻ rang, đường thốt nốt, đắng nhẹ</p>
+        <figure class="mini">
+          <svg viewBox="0 0 120 40" aria-hidden="true"><path d="M2.0 8.6 L6.7 25.0 L11.3 30.6 L16.0 32.5 L20.7 30.6 L25.4 28.4 L30.0 26.4 L34.7 24.4 L39.4 22.5 L44.0 20.7 L48.7 18.9 L53.4 17.3 L58.1 15.7 L62.7 14.2 L67.4 12.8 L72.1 11.5 L76.8 10.3 L81.4 9.2 L86.1 8.2 L90.8 7.3 L95.4 6.6 L100.1 5.9 L104.8 5.4 L109.5 5.1 L114.1 4.9" class="bt"/><circle cx="90.9" cy="7.3" r="2.5" class="fc-dot"/></svg>
+          <figcaption>Rang đậm · ra lò 216°</figcaption>
+        </figure>
+        <p class="price"><span class="num">125.000&nbsp;₫</span><span class="unit">túi 250 g</span></p>
+        <button type="button" class="btn btn-secondary" >Thêm vào giỏ<span class="sr-only">: Đắk Hà Robusta Fine</span></button>
+      </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block alt" id="lich-rang" aria-labelledby="schedule-title">
+    <div class="wrap block-head">
+      <div>
+        <h2 class="section" id="schedule-title">Lịch rang và giao</h2>
+        <p class="block-intro">Đặt trước 18:00 thứ Hai để vào mẻ thứ Ba. Hạt nghỉ 24 giờ cho thoát khí rồi mới đóng túi.</p>
+      </div>
+      <table class="timetable">
+        <caption>Tuần 44, từ thứ Hai 26/10 đến thứ Bảy 31/10/2026</caption>
+        <thead><tr><th scope="col">Bước</th><th scope="col">Thời gian</th><th scope="col">Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Chốt đơn</th><td class="num" data-label="Thời gian">Thứ Hai 26/10, 18:00</td><td data-label="Ghi chú">Đơn sau giờ này vào mẻ tuần sau</td></tr>
+          <tr><th scope="row">Rang</th><td class="num" data-label="Thời gian">Thứ Ba 27/10, 06:00–13:00</td><td data-label="Ghi chú">6 mẻ, mỗi mẻ 5 kg</td></tr>
+          <tr><th scope="row">Nghỉ hạt, đóng túi</th><td class="num" data-label="Thời gian">Thứ Ba 27/10 – sáng thứ Tư 28/10</td><td data-label="Ghi chú">Túi van một chiều, in số mẻ</td></tr>
+          <tr><th scope="row">Giao nội thành Đà Lạt</th><td class="num" data-label="Thời gian">Thứ Tư 28/10, 15:00–19:00</td><td data-label="Ghi chú">Miễn phí từ 2 túi</td></tr>
+          <tr><th scope="row">Gửi toàn quốc</th><td class="num" data-label="Thời gian">Gửi thứ Tư 28/10, nhận thứ Sáu 30/10 – thứ Bảy 31/10</td><td data-label="Ghi chú">2–3 ngày tuỳ tỉnh</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="dinh-ky" aria-labelledby="plans-title">
+    <div class="wrap block-stack">
+      <div>
+        <h2 class="section" id="plans-title">Gói định kỳ</h2>
+        <p class="block-intro">Nhận hạt theo lịch, đổi loại hoặc tạm dừng trước 18:00 thứ Hai.</p>
+      </div>
+      <div>
+        <div class="plans">
+          <div class="plan">
+            <h3>Hai tuần một lần</h3>
+            <p>2 túi 250 g mỗi lần, loại do bạn chọn.</p>
+            <p class="total num">640.000&nbsp;₫ / tháng</p>
+            <button type="button" class="btn btn-secondary">Đăng ký gói 2 tuần</button>
+          </div>
+          <div class="plan">
+            <h3>Mỗi tháng</h3>
+            <p>1 túi 1 kg, rang theo khẩu vị bạn ghi lúc đăng ký.</p>
+            <p class="total num">590.000&nbsp;₫ / tháng</p>
+            <button type="button" class="btn btn-secondary">Đăng ký gói tháng</button>
+          </div>
+        </div>
+        <p class="fineprint">Giá đã gồm VAT 8% và phí giao toàn quốc. Huỷ bất kỳ lúc nào; tháng đã thanh toán vẫn được giao đủ.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>Rang Mộc · 12 đường Hoa Hồng, Đà Lạt, Lâm Đồng</p>
+    <p><a href="tel:+84263000000">0263 000 000</a> · Mở cửa 7:00–17:00, thứ Ba đến Chủ nhật</p>
+    <p>Trang mẫu tham chiếu của design_standard — thương hiệu và số liệu là hư cấu.</p>
+  </div>
+</footer>
+</body>
+</html>

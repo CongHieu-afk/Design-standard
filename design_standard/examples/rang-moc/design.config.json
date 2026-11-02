@@ -1,0 +1,14 @@
+{
+  "standard": "design_standard@3.0",
+  "language": ["vi"],
+  "darkMode": false,
+  "print": [],
+  "tokens": "tokens.json",
+  "preview": {"url": "http://localhost:8770", "command": "npx serve -l 8770 ."},
+  "verify": {"commands": ["node --check ../../scripts/audit.mjs"]},
+  "gates": "../design-gates",
+  "screens": [
+    {"id": "home", "platform": "web", "path": "/home.html", "source": ["home.html"], "type": "home", "tier": "C", "expression": "E2", "ready": "main", "states": [], "ssr": true},
+    {"id": "admin-orders", "platform": "web", "path": "/admin-orders.html", "source": ["admin-orders.html"], "type": "list", "tier": "B", "expression": "E0", "ready": "main", "states": [], "input": "fine", "users": "nhân viên đóng gói"}
+  ]
+}

@@ -1,0 +1,51 @@
+# Mẫu cho kho sử dụng Design-standard.
+# Thay <PINNED_COMMIT_SHA> bằng commit đã duyệt; không dùng main/latest.
+name: design-standard
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout trusted standard
+        uses: actions/checkout@v4
+        with:
+          repository: CongHieu-afk/Design-standard
+          ref: <PINNED_COMMIT_SHA>
+          path: .design-standard
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install project dependencies
+        run: npm ci
+      - name: Install verifier dependencies
+        working-directory: .design-standard
+        run: npm ci && npx playwright install --with-deps chromium
+      - name: Start preview
+        run: |
+          node -e "const {spawn}=require('node:child_process');const c=require('./design.config.json').preview.command;const p=spawn(c,{shell:true,detached:true,stdio:'ignore'});p.unref()"
+      - name: Mandatory verification
+        run: >-
+          node .design-standard/design_standard/scripts/verify-project.mjs
+          --config design.config.json
+          --changed-from ${{ github.event.pull_request.base.sha || github.event.before }}
+          --run
+      - name: Upload audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-standard-audit
+          path: audit_out/verify
+          if-no-files-found: ignore

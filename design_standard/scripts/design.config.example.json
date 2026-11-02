@@ -1,0 +1,114 @@
+{
+  "standard": "design_standard@3.0",
+  "language": [
+    "vi"
+  ],
+  "darkMode": false,
+  "print": [
+    "admin-order-detail"
+  ],
+  "tokens": "tokens.json",
+  "preview": {
+    "url": "http://localhost:4173",
+    "command": "npm run build && npx vite preview --port 4173 --strictPort"
+  },
+  "verify": {
+    "commands": ["npm test", "npm run build"]
+  },
+  "baseline": "a11y-baseline.json",
+  "exceptions": "design-exceptions.json",
+  "gates": "design-gates",
+  "screens": [
+    {
+      "id": "home",
+      "platform": "web",
+      "path": "/",
+      "source": ["src/pages/home/"],
+      "type": "home",
+      "tier": "C",
+      "expression": "E2",
+      "ready": "main",
+      "states": [],
+      "ssr": true
+    },
+    {
+      "id": "catalog",
+      "platform": "web",
+      "path": "/san-pham",
+      "source": ["src/pages/catalog/"],
+      "type": "commerce",
+      "tier": "C",
+      "expression": "E1",
+      "ready": "main",
+      "states": [],
+      "ssr": true
+    },
+    {
+      "id": "checkout",
+      "platform": "web",
+      "path": "/thanh-toan",
+      "source": ["src/pages/checkout/"],
+      "type": "checkout",
+      "tier": "A",
+      "expression": "E0",
+      "ready": "form",
+      "states": []
+    },
+    {
+      "id": "admin-orders",
+      "platform": "web",
+      "path": "/admin/don-hang",
+      "source": ["src/pages/admin/orders/"],
+      "type": "list",
+      "tier": "B",
+      "expression": "E0",
+      "input": "fine",
+      "users": "nhân viên kho",
+      "ready": "table tbody tr",
+      "route": [{ "url": "**/api/orders*", "file": "fixtures/orders.json" }],
+      "states": [
+        { "id": "rong-do-loc", "viewports": ["320", "1440"], "steps": [{ "action": "fill", "selector": "input[type=search]", "value": "khongcodonnay" }], "ready": "text=Không có đơn" },
+        { "id": "loi-api", "viewports": ["320", "1440"], "ready": "[role=alert]", "expectConsoleErrors": true, "route": [{ "url": "**/api/orders*", "status": 500, "body": { "message": "fixture" } }] },
+        { "id": "dialog-huy-don", "viewports": ["1440"], "dialog": true, "steps": [{ "action": "click", "selector": "role=button[name=/Huỷ đơn/]" }] }
+      ]
+    },
+    {
+      "id": "admin-order-detail",
+      "platform": "web",
+      "path": "/admin/don-hang/:id",
+      "source": ["src/pages/admin/order-detail/"],
+      "params": {
+        "id": "DH-1042"
+      },
+      "type": "detail",
+      "tier": "B",
+      "expression": "E0",
+      "ready": "main",
+      "states": [],
+      "input": "fine"
+    },
+    {
+      "id": "admin-refund",
+      "platform": "web",
+      "path": "/admin/hoan-tien",
+      "source": ["src/pages/admin/refund/"],
+      "type": "form",
+      "tier": "A",
+      "expression": "E0",
+      "ready": "form",
+      "states": [],
+      "input": "fine",
+      "users": "kế toán"
+    },
+    {
+      "id": "app-order-tracking",
+      "platform": "mobile",
+      "stack": "flutter",
+      "source": ["lib/screens/order_tracking/"],
+      "type": "detail",
+      "tier": "C",
+      "expression": "E1",
+      "states": []
+    }
+  ]
+}

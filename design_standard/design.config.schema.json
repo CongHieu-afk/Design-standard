@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "design.config.json",
+  "description": "Khai báo màn hình theo bộ chuẩn design_standard (02 §4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "language",
+    "tokens",
+    "preview",
+    "verify",
+    "screens"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "standard": {
+      "type": "string",
+      "description": "Phiên bản bộ chuẩn, ví dụ design_standard@3.0 (audit.mjs chỉ cảnh báo khi khác số chính)"
+    },
+    "language": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "vi",
+          "en"
+        ]
+      },
+      "minItems": 1
+    },
+    "darkMode": {
+      "type": "boolean"
+    },
+    "themeStorage": {
+      "type": "object",
+      "description": "App ép theme qua localStorage: { \"light\": {khoá: giá trị}, \"dark\": {…} }. audit.mjs ghi trước khi trang chạy",
+      "properties": {
+        "light": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "dark": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "initStorage": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "localStorage ghi trước khi trang chạy, cho mọi màn hình (ví dụ token GIẢ khi API là fixture). Không đặt token thật ở đây"
+    },
+    "internalTerms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Thuật ngữ nội bộ/kỹ thuật không được lộ ra giao diện (W10, T9), thêm vào danh sách mặc định"
+    },
+    "impeccable": {
+      "type": "boolean",
+      "description": "audit.mjs chạy thêm W17 bằng impeccable detect (12 §5.4); tương đương cờ --impeccable"
+    },
+    "print": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "id các màn hình cần in"
+    },
+    "baseline": {
+      "type": "string"
+    },
+    "exceptions": {
+      "type": "string",
+      "description": "File JSON cho minor: [{id, finding, severity:'minor', reason, owner:'@name', expires:'yyyy-mm-dd', approvalRef:'https://github.com/.../issues|pull/N'}]"
+    },
+    "tokens": {
+      "type": "string",
+      "description": "Đường dẫn file token (DTCG JSON) cho check_tokens.mjs; hook và CI dùng nếu có"
+    },
+    "preview": {
+      "type": "object",
+      "description": "Máy chủ xem trước cho hook/CI (09 §4)",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Ví dụ http://localhost:4173"
+        },
+        "command": {
+          "type": "string",
+          "description": "Lệnh dựng + phục vụ, ví dụ \"npm run build && npx vite preview --port 4173\" (CI dùng)"
+        }
+      },
+      "required": [
+        "url",
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "verify": {
+      "type": "object",
+      "description": "Các lệnh test/build bắt buộc chạy trước audit và push.",
+      "required": ["commands"],
+      "properties": {
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "screens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "platform",
+          "type",
+          "tier",
+          "expression",
+          "source",
+          "states"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "platform": {
+            "enum": [
+              "web",
+              "mobile",
+              "tablet",
+              "wear",
+              "desktop"
+            ],
+            "description": "wear: xem phụ lục thiết bị đeo"
+          },
+          "path": {
+            "type": "string",
+            "description": "Bắt buộc với platform web; tham số dạng :id"
+          },
+          "source": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "File hoặc tiền tố thư mục nguồn tạo nên màn hình; CI dùng để phát hiện UI đổi nhưng không được khai báo."
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "enum": [
+              "home",
+              "landing",
+              "pricing",
+              "dashboard",
+              "alert",
+              "list",
+              "detail",
+              "map",
+              "workspace",
+              "form",
+              "auth",
+              "onboarding",
+              "settings",
+              "account",
+              "article",
+              "search",
+              "notifications",
+              "commerce",
+              "checkout",
+              "ai",
+              "status",
+              "immersive",
+              "email"
+            ]
+          },
+          "tier": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "expression": {
+            "enum": [
+              "E0",
+              "E1",
+              "E2",
+              "E3"
+            ]
+          },
+          "users": {
+            "type": "string",
+            "description": "Ghi chú người dùng đặc thù, ví dụ 'nhân viên kho', 'người dùng lớn tuổi'"
+          },
+          "input": {
+            "enum": [
+              "fine",
+              "coarse",
+              "both"
+            ],
+            "description": "Web: kiểu con trỏ. fine = chỉ chuột/bút; coarse = chỉ cảm ứng; both (mặc định) = cảm ứng ở viewport < 1024px"
+          },
+          "stack": {
+            "enum": [
+              "dom",
+              "flutter",
+              "compose",
+              "native"
+            ],
+            "description": "Công nghệ dựng; web dựng bằng Flutter (canvas) ghi 'flutter' để audit.mjs bỏ qua"
+          },
+          "ssr": {
+            "type": "boolean",
+            "description": "Trang render phía server: audit.mjs kiểm thêm khi tắt JavaScript (W14)"
+          },
+          "ready": {
+            "type": "string",
+            "description": "Selector Playwright phải ĐANG HIỆN trước khi đo (ví dụ 'table tbody tr', 'text=Tên sản phẩm mẫu'). Không thấy sau 15s → blocker not-ready, không đo tiếp. Không khai báo: trang gần như trống bị báo empty-page"
+          },
+          "initStorage": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Như initStorage gốc, riêng màn hình này"
+          },
+          "route": {
+            "$ref": "#/$defs/routes",
+            "description": "Chặn API cho mọi trạng thái của màn hình (fixture, 11 §2)"
+          },
+          "states": {
+            "type": "array",
+            "description": "Trạng thái ngoài trạng thái đầu (\"dau\"): dialog, rỗng do lọc, lỗi API… Mỗi trạng thái được đo như trạng thái đầu (DOM, axe, impeccable, ảnh chụp); Tab qua trang chỉ chạy ở trạng thái đầu",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$",
+                  "not": {
+                    "const": "dau"
+                  }
+                },
+                "viewports": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "320",
+                      "768",
+                      "1440"
+                    ]
+                  },
+                  "description": "Mặc định cả ba"
+                },
+                "ready": {
+                  "type": "string",
+                  "description": "Chờ SAU các bước (dấu hiệu trạng thái đã dựng xong). ready của màn hình vẫn chờ trước các bước, trừ state có route riêng, có ready và không có bước (ví dụ API lỗi)"
+                },
+                "expectConsoleErrors": {
+                  "type": "boolean",
+                  "description": "State giả lập lỗi: không tính console.error là lỗi JS (lỗi ném ra vẫn tính)"
+                },
+                "expectUrl": {
+                  "type": "string",
+                  "description": "Sau các bước, URL phải chứa chuỗi này (ví dụ '#/tong-quan' sau bước back); dùng cùng ready để kiểm URL khớp nội dung → url-after-action"
+                },
+                "expectFocus": {
+                  "type": "string",
+                  "description": "Sau các bước, phần tử đang focus phải khớp selector này (ví dụ sau khi xoá xong: '#page-title'); không khớp → focus-after-action. 2.4: bắt buộc cho state có steps (trừ dialog), thiếu → state-thieu-expectFocus"
+                },
+                "route": {
+                  "$ref": "#/$defs/routes",
+                  "description": "Ưu tiên hơn route của màn hình"
+                },
+                "dialog": {
+                  "type": "boolean",
+                  "description": "Sau các bước, kiểm: có dialog đang hiện, focus trong dialog, có tên, Escape đóng, focus về nút mở (bước click cuối)"
+                },
+                "steps": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "action"
+                    ],
+                    "properties": {
+                      "action": {
+                        "enum": [
+                          "click",
+                          "fill",
+                          "select",
+                          "hover",
+                          "press",
+                          "waitFor",
+                          "wait",
+                          "back",
+                          "forward"
+                        ],
+                        "description": "back/forward: nút Back/Forward của trình duyệt (2.3)"
+                      },
+                      "selector": {
+                        "type": "string",
+                        "description": "Selector Playwright; lấy phần tử ĐANG HIỆN đầu tiên"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "key": {
+                        "type": "string"
+                      },
+                      "ms": {
+                        "type": "number",
+                        "maximum": 5000
+                      },
+                      "timeout": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "if": {
+          "properties": {
+            "platform": {
+              "const": "web"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "path",
+            "ready"
+          ]
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "storageState": {
+          "type": "string",
+          "description": "File phiên đăng nhập Playwright cho màn hình cần đăng nhập (09 §2). Chứa token: để ở thư mục tạm của hệ điều hành, xoá sau khi kiểm"
+        }
+      }
+    },
+    "gates": {
+      "type": "string",
+      "description": "2.8: thư mục file cổng (tham-chieu.md, huong-da-chon.md, su-that.md — mẫu ở examples/design-gates/). Trang E2–E3 bắt buộc; thiếu → gate-thieu (major)."
+    }
+  },
+  "$defs": {
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Mẫu URL Playwright, ví dụ **/api/products"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "body": {
+            "description": "JSON trả về (ghi nguyên giá trị)"
+          },
+          "file": {
+            "type": "string",
+            "description": "File fixture, đường dẫn tương đối với config"
+          },
+          "delayMs": {
+            "type": "number",
+            "maximum": 60000,
+            "description": "Giữ phản hồi lại (ms) để chụp trạng thái đang tải"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

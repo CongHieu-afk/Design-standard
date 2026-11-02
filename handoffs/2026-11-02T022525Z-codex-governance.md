@@ -34,9 +34,10 @@
 - `npm run verify`: 20/20 test đạt; policy và syntax đạt. `git diff --check`: đạt.
 - Codex CLI vòng cuối: không còn finding chặn merge. Gemini CLI 0.66.0 không chạy review được vì Google trả `UNSUPPORTED_CLIENT` và yêu cầu chuyển sang Antigravity; không tính là review thành công.
 - PR #3: `guard`, `verify`, GitGuardian đều đạt. Required `verify`/`guard` đã pin vào GitHub Actions app ID 15368.
-- G5 đã bật: 1 approval, CODEOWNER review, dismiss stale approval và approval cho push mới nhất; PR cập nhật dòng này là phép kiểm độc lập đầu tiên.
+- G5 đã bật và kiểm chứng qua PR #5: `CongHieu-abc` approve độc lập, checks xanh rồi PR mới được merge.
+- PR #6 đã duyệt trước hash; PR kế tiếp nâng checkout/setup-node/upload-artifact lên bản Node 24 và loại hash cũ.
 
 ## Còn ngoài repo
 
-- Chờ `CongHieu-abc` review và approve PR kiểm chứng G5.
+- Các PR tiếp theo vẫn cần `CongHieu-abc` hoặc CODEOWNER độc lập khác approve.
 - Admin vẫn có thể đổi GitHub Settings; đây là rủi ro quản trị ngoài phạm vi CI.

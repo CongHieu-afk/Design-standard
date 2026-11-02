@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "files": {
+    ".npmrc": ["sha256:b962362e-be7560b5-34e834c2-ede51186-c2e3fceb-94e12cc4-34a11180-f22391f2"],
+    ".github/workflows/policy-guard.yml": ["sha256:3689fd04-66b5a171-52e43cb6-4b214017-ec94d60a-32231785-8be1f87b-c447f9c5"],
+    ".github/workflows/verify.yml": ["sha256:b80f2b59-c1647e1a-7196bae6-2b0e0c05-442b3730-d1151dc5-bbdc1c69-b9b79859"],
+    "design_standard/scripts/audit.mjs": ["sha256:b514f366-80435fc2-113c503f-a2e9f637-563d02d3-cd4da30a-20c619aa-d13806d8"],
+    "design_standard/scripts/check_gates.mjs": ["sha256:46eb99a1-4f91d560-a1193d04-23f5f77a-d3a1456d-dc4ecf1c-91866c0c-b1908b8d"],
+    "design_standard/scripts/check_tokens.mjs": ["sha256:58975968-9eb71d1e-bc898488-47e06490-7a4faa41-d19dd944-18b9a4ff-d8f099a0"],
+    "design_standard/scripts/ci/ui-standard.github.yml": ["sha256:8d124591-eef08de4-1aecdeac-ca3c561f-076ad330-6cd9c3ab-604e80d8-725bf454"],
+    "design_standard/scripts/governance-core.mjs": ["sha256:1a88d23b-fffa18d7-9a3e7a3b-a8185e35-a8ac2be3-5c7e3580-2b96b52e-6a720c86"],
+    "design_standard/scripts/verify-candidate.mjs": ["sha256:22818e21-fab47e59-ef7af83c-dbdaff49-60f821c2-46851926-dd503a70-61650670"],
+    "design_standard/scripts/verify-project.mjs": ["sha256:283e173e-50e2f35c-209527be-0a1325aa-bfb6e38c-4bf2e09b-84bc1448-8c8b2601"],
+    "design_standard/scripts/verify-repo.mjs": ["sha256:62f7cdc2-31ea984f-8eccd406-4f67dca4-a5b50342-cda1c067-26eda6b1-5f99eb32"],
+    "package-lock.json": ["sha256:72f17074-1b68d9e2-25206358-f97deaf8-4c1e1f06-82c8d223-234f36b1-c7684cb3"],
+    "package.json": ["sha256:8dc90084-29883fb2-78c0484b-bf52b9cc-7d6a52ee-db35be3d-4a0767d5-e26c4945"],
+    "tests/audit-integration.test.mjs": ["sha256:fae5973c-c8c840ee-a099d8ab-c3624688-d0c08660-7edb899c-9131da1c-5ed70dfa"],
+    "tests/candidate-guard.test.mjs": ["sha256:acc4cc72-51d5e1df-1fae13b9-ad9ef635-41099ab2-78093ca7-a80e725c-3559bba3"],
+    "tests/governance.test.mjs": ["sha256:db9e9dee-ecde68cb-0e4baee8-03c6c3fd-2f55e5ab-e76a8130-10996eae-30d72873"],
+    "tests/runtime-primitives.test.mjs": ["sha256:08d65bc4-9a85bf99-e056d40f-6b49d475-25841ec6-524677e1-4a9b6043-41e3b45c"],
+    "tests/verify-project.test.mjs": ["sha256:86621e15-49bb7df6-9686546a-9cbb2688-9aa8f1e8-aab432fd-9c4a6891-915928b8"]
+  }
+}

@@ -8,6 +8,13 @@
 - Một manifest nối source → screen → state; CI có guard tin cậy chống PR tự hạ checker.
 - Motion token, lifecycle/cleanup và primitive trợ năng được hợp nhất trong quy trình 3.0.
 
+### Bổ sung 02/11/2026 — Gia cố sau phản biện đối kháng
+
+- Guard kiểm cấu trúc/lệnh chính xác và có mutation test; PR không thể thay checker bằng echo/no-op rồi tự báo đạt.
+- GitHub Actions được pin full commit SHA; `CODEOWNERS` phủ toàn repo.
+- Tài liệu tách rõ hai chế độ: nhóm có reviewer độc lập và chủ repo đơn lẻ có rủi ro còn lại.
+- Phạm vi cam kết được nói đúng: CI bảo vệ đường merge, không thể ép mọi câu trả lời của mọi agent hoặc khóa quản trị viên GitHub.
+
 ### Bổ sung 01/11/2026 — Chọn lọc kiến trúc Animate UI, sửa motion primitive
 
 - `runtime/motion.js`: motion token nội bộ theo vai trò, không thêm dependency.

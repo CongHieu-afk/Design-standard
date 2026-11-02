@@ -4,6 +4,7 @@
 
 - Rút `design_standard/README.md` thành cổng vào ngắn, sửa lệch phiên bản 2.1 → 4.0 và phân loại rõ tài liệu bắt buộc/theo việc/lịch sử.
 - `docs/REFERENCE_MAP.md` trở thành nguồn phân loại/điều hướng đầy đủ; kiểm tra tài liệu xác nhận phiên bản, nhãn phân loại và kích thước điểm vào.
+- Cô đọng 07/11 về quy tắc đang áp dụng; chuyển 35 phản hồi gu cũ nguyên vẹn sang archive để không bị nạp như policy dự án mới.
 - `uiRoots` thay bộ lọc phần mở rộng: mọi file UI trong phạm vi phải thuộc ít nhất một screen.
 - `stateCoverage` buộc inventory loading/empty/error/dialog hoặc lý do không áp dụng.
 - W8 phát hiện chuyển động hình học dài/lặp khi reduced motion; W19 chứng minh motion-token và cleanup sau dispose.

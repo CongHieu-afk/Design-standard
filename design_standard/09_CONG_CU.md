@@ -46,7 +46,7 @@ Workflow bắt buộc chạy trên PR và push `main`:
 3. `npm run verify`;
 4. với repo tiêu thụ: khởi động preview rồi chạy `verify-project.mjs --run`.
 
-GitHub phải bật required check, review và CODEOWNER approval. Checker/workflow/config là file được bảo vệ; local hook không phải ranh giới bảo mật.
+GitHub phải yêu cầu `verify` + `guard`, strict, áp dụng cho admin và cấm force-push/xóa nhánh. Chỉ bật approval/CODEOWNER sau khi đã thêm reviewer độc lập vào `CODEOWNERS`; repo một maintainer không được ghi G5 đã đóng. Sau bootstrap, checker/test/workflow/npm config nằm trong trust manifest và đổi qua hai PR; local hook không phải ranh giới bảo mật.
 
 ## Hook
 

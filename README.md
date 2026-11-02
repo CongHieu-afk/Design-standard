@@ -19,10 +19,10 @@ AGENTS.md + CONSTRAINTS.md
           ↓
 test + verifier + audit fail-closed
           ↓
-required CI + CODEOWNERS + branch protection
+required CI + branch protection
 ```
 
-Local hook chỉ phản hồi sớm; GitHub required checks mới là ranh giới merge. Không có cấu hình nào bảo đảm agent tuân thủ mọi câu trả lời, nhưng thay đổi không qua gate thì không được merge.
+Local hook chỉ phản hồi sớm; GitHub required checks mới là ranh giới merge. Policy không kiểm soát mọi câu trả lời hay admin thay đổi Settings; nó chỉ cưỡng chế thay đổi đi qua đường merge đã bảo vệ.
 
 ## Lệnh
 
@@ -34,8 +34,14 @@ Local hook chỉ phản hồi sớm; GitHub required checks mới là ranh giớ
 | `node design_standard/scripts/audit.mjs ...` | Audit UI đầy đủ, fail khi còn blocker/major |
 | `node design_standard/scripts/verify-project.mjs ...` | Kiểm manifest và coverage của source thay đổi |
 
-## Thiết lập GitHub bắt buộc
+## Thiết lập GitHub
 
-Sau lần push đầu, bảo vệ `main`: yêu cầu check `verify`, ít nhất một approval, CODEOWNER approval; cấm force-push, xóa nhánh và bypass nếu tài khoản cho phép.
+| Chế độ | Bắt buộc |
+| --- | --- |
+| Mọi repo | PR, `verify` + `guard`, strict, áp dụng cho admin, resolve conversation; cấm force-push/xóa nhánh |
+| Có reviewer độc lập | Thêm reviewer vào `CODEOWNERS`, rồi bật 1 approval không phải tác giả, CODEOWNER, dismiss stale và approval sau push cuối |
+| 1 maintainer | Không bật review gây deadlock; ghi rõ chưa có review độc lập và không tuyên bố G5 đã đóng |
 
-Repo không thể tự bật branch protection chỉ bằng file; chủ repo phải bật trong Settings hoặc API GitHub.
+`CODEOWNERS` chỉ chọn người duyệt; nó không cưỡng chế khi branch protection chưa bật. Chủ repo vẫn có thể đổi Settings/API, nên không tồn tại bảo đảm “100% mọi agent, mọi lúc”.
+
+Sau PR bootstrap được người thật review và merge, trust root (checker, test, workflow, npm config) đổi theo hai PR: PR 1 chỉ thêm SHA-256 mới vào `.github/trusted-policy.json`; PR 2 mới đổi file. Guard dùng manifest từ base, nên từ thời điểm đó một PR không thể vừa tự cấp hash vừa thay checker. PR bootstrap là trust-on-first-use, không được mô tả là đã có bảo vệ này.

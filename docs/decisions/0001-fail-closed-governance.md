@@ -13,7 +13,7 @@ Các client từng có file luật dài riêng, hook chưa cài, audit trả mã
 - `AGENTS.md` là policy duy nhất; file client chỉ là adapter.
 - Mọi thay đổi phải chạy test; blocker/major hoặc kiểm máy bắt buộc bị bỏ làm gate đỏ.
 - Baseline và local waiver chỉ nhận minor.
-- `design.config.json` phải khai source coverage và lệnh test/build.
+- `design.config.json` phải khai `uiRoots`, source coverage, inventory loading/empty/error/dialog và lệnh test/build. Inventory làm giả vẫn cần người duyệt phát hiện; repository không thể suy ra mọi state từ mã.
 - Required CI và branch protection là ranh giới merge; CODEOWNER review chỉ bật khi có người duyệt độc lập để không khóa repo một maintainer.
 - Sau bootstrap được review thủ công, trust root dùng SHA-256 từ base và đổi qua hai PR: duyệt hash trước, đổi nội dung sau.
 - Handoff theo file riêng từng phiên, không dùng một trạng thái `ĐANG MỞ` toàn cục.

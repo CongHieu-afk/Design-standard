@@ -34,6 +34,8 @@ Local hook chỉ phản hồi sớm; GitHub required checks mới là ranh giớ
 | `node design_standard/scripts/audit.mjs ...` | Audit UI đầy đủ, fail khi còn blocker/major |
 | `node design_standard/scripts/verify-project.mjs ...` | Kiểm manifest và coverage của source thay đổi |
 
+`design.config.json` khai `uiRoots` để mọi loại file UI đều được kiểm, không dựa vào danh sách phần mở rộng. Mỗi screen khai `stateCoverage` cho loading/empty/error/dialog; mục không áp dụng dùng `n/a:` kèm lý do.
+
 ## Thiết lập GitHub
 
 | Chế độ | Bắt buộc |

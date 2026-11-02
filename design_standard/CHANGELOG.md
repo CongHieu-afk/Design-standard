@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Chưa phát hành — 4.0 · Gia cố coverage
+
+- `uiRoots` thay bộ lọc phần mở rộng: mọi file UI trong phạm vi phải thuộc ít nhất một screen.
+- `stateCoverage` buộc inventory loading/empty/error/dialog hoặc lý do không áp dụng.
+- W8 phát hiện chuyển động hình học dài/lặp khi reduced motion; W19 chứng minh motion-token và cleanup sau dispose.
+- **Không tương thích ngược:** cấu hình 3.x phải thêm `uiRoots`, `stateCoverage` và đổi `standard` thành `design_standard@4.0`.
+
 ## 3.0 — 02/11/2026 · Governance fail-closed
 
 - Một nguồn luật ở `AGENTS.md`; adapter Claude/Gemini/skill chỉ trỏ về nguồn này.

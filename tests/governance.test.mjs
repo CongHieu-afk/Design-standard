@@ -69,13 +69,77 @@ test('manifest requires explicit testable coverage for every screen', () => {
   assert.match(problems.join('\n'), /ready/);
   assert.match(problems.join('\n'), /source/);
   assert.match(problems.join('\n'), /states/);
+  assert.match(problems.join('\n'), /stateCoverage/);
+  assert.match(problems.join('\n'), /uiRoots/);
 });
 
 test('changed UI source must belong to a declared screen', () => {
   const screens = [{ id: 'home', source: ['src/pages/home/'] }];
+  const uiRoots = ['src/pages/', 'src/components/', 'android/app/src/main/res/layout/'];
 
-  assert.deepEqual(validateChangedCoverage(['src/pages/home/index.tsx'], screens), []);
-  assert.deepEqual(validateChangedCoverage(['src/pages/admin/index.tsx'], screens), ['src/pages/admin/index.tsx']);
+  assert.deepEqual(validateChangedCoverage(['src/pages/home/index.tsx'], screens, uiRoots), []);
+  assert.deepEqual(validateChangedCoverage([
+    'src/pages/admin/theme.scss',
+    'src/components/card.astro',
+    'android/app/src/main/res/layout/activity_main.xml',
+    'scripts/release.mjs',
+  ], screens, uiRoots), [
+    'src/pages/admin/theme.scss',
+    'src/components/card.astro',
+    'android/app/src/main/res/layout/activity_main.xml',
+  ]);
+});
+
+test('state coverage must account for loading, empty, error and dialog paths', () => {
+  const base = {
+    language: ['vi'], tokens: 'tokens.json', uiRoots: ['src/'],
+    preview: { url: 'http://localhost:4173', command: 'npm run preview' },
+    verify: { commands: ['npm test'] },
+  };
+  const screen = {
+    id: 'orders', platform: 'web', path: '/', source: ['src/orders/'], type: 'list',
+    tier: 'B', expression: 'E0', ready: 'main',
+    states: [{ id: 'empty' }, { id: 'error' }, { id: 'confirm', dialog: true }],
+    stateCoverage: {
+      loading: 'n/a: dữ liệu dựng phía máy chủ', empty: 'empty', error: 'error', dialog: 'confirm',
+    },
+  };
+
+  assert.deepEqual(validateManifest({ ...base, screens: [screen] }), []);
+  assert.match(validateManifest({ ...base, screens: [{ ...screen, stateCoverage: { ...screen.stateCoverage, error: 'missing' } }] }).join('\n'), /stateCoverage\.error.*missing/);
+  assert.match(validateManifest({ ...base, screens: [{ ...screen, stateCoverage: { ...screen.stateCoverage, dialog: 'empty' } }] }).join('\n'), /stateCoverage\.dialog.*dialog/);
+  assert.match(validateManifest({ ...base, screens: [{ ...screen, stateCoverage: { ...screen.stateCoverage, loading: 'n\/a: x' } }] }).join('\n'), /stateCoverage\.loading.*lý do/);
+  assert.match(validateManifest({ ...base, uiRoots: ['unrelated/'], screens: [screen] }).join('\n'), /source.*uiRoots/);
+  assert.match(validateManifest({ ...base, uiRoots: ['./'], screens: [{ ...screen, source: ['./'] }] }).join('\n'), /uiRoots|source/);
+  assert.match(validateManifest({ ...base, uiRoots: ['.'], screens: [{ ...screen, source: ['.'] }] }).join('\n'), /uiRoots|source/);
+  assert.match(validateManifest({ ...base, uiRoots: ['src/../'], screens: [screen] }).join('\n'), /uiRoots/);
+  assert.deepEqual(validateChangedCoverage(['src/admin/view.kt'], [{ source: ['src/orders'] }], ['src']), ['src/admin/view.kt']);
+  assert.match(validateManifest({ ...base, screens: [{ ...screen, stateCoverage: { ...screen.stateCoverage, typo: 'empty' } }] }).join('\n'), /stateCoverage.*typo/);
+});
+
+test('malformed coverage config fails closed instead of crashing the verifier', () => {
+  const malformed = {
+    language: ['vi'], tokens: 'tokens.json', uiRoots: [42],
+    preview: { url: 'http://localhost:4173', command: 'npm run preview' },
+    verify: { commands: ['npm test'] },
+    screens: [{
+      id: 'broken', platform: 'web', path: '/', ready: 'main', type: 'home', tier: 'C', expression: 'E0',
+      source: [null], states: {}, stateCoverage: 'invalid',
+    }],
+  };
+
+  assert.doesNotThrow(() => validateManifest(malformed));
+  assert.match(validateManifest(malformed).join('\n'), /uiRoots|source|states|stateCoverage/);
+  assert.doesNotThrow(() => validateChangedCoverage(['src/index.tsx'], malformed.screens, malformed.uiRoots));
+});
+
+test('primary 4.0 configuration example is executable, not a partial migration snippet', async () => {
+  const chapter = await readFile(new URL('../design_standard/02_PHAN_CAP.md', import.meta.url), 'utf8');
+  const example = JSON.parse(chapter.match(/```json\s*([\s\S]*?)```/)?.[1] || 'null');
+  const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+
+  assert.deepEqual(validateManifest(example), []);
+  assert.equal(example.standard, `design_standard@${pkg.version.split('.')[0]}.0`);
 });
 
 test('all client adapters point to the canonical root policy', async () => {

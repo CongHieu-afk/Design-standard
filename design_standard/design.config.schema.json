@@ -7,6 +7,7 @@
   "required": [
     "language",
     "tokens",
+    "uiRoots",
     "preview",
     "verify",
     "screens"
@@ -17,7 +18,7 @@
     },
     "standard": {
       "type": "string",
-      "description": "Phiên bản bộ chuẩn, ví dụ design_standard@3.0 (audit.mjs chỉ cảnh báo khi khác số chính)"
+      "description": "Phiên bản bộ chuẩn, ví dụ design_standard@4.0 (audit.mjs chỉ cảnh báo khi khác số chính)"
     },
     "language": {
       "type": "array",
@@ -87,6 +88,12 @@
       "type": "string",
       "description": "Đường dẫn file token (DTCG JSON) cho check_tokens.mjs; hook và CI dùng nếu có"
     },
+    "uiRoots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Thư mục chứa source UI. Mọi file đổi bên trong, không phân biệt phần mở rộng, phải thuộc source của ít nhất một screen."
+    },
     "preview": {
       "type": "object",
       "description": "Máy chủ xem trước cho hook/CI (09 §4)",
@@ -132,7 +139,8 @@
           "tier",
           "expression",
           "source",
-          "states"
+          "states",
+          "stateCoverage"
         ],
         "properties": {
           "id": {
@@ -346,6 +354,18 @@
               },
               "additionalProperties": false
             }
+          },
+          "stateCoverage": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["loading", "empty", "error", "dialog"],
+            "description": "Mỗi giá trị là state id đã khai báo hoặc 'n/a: <lý do cụ thể>'. Đây là inventory để review, không chứng minh UI không có state khác.",
+            "properties": {
+              "loading": { "$ref": "#/$defs/stateCoverageValue" },
+              "empty": { "$ref": "#/$defs/stateCoverageValue" },
+              "error": { "$ref": "#/$defs/stateCoverageValue" },
+              "dialog": { "$ref": "#/$defs/stateCoverageValue" }
+            }
           }
         },
         "if": {
@@ -378,6 +398,11 @@
     }
   },
   "$defs": {
+    "stateCoverageValue": {
+      "type": "string",
+      "minLength": 1,
+      "description": "State id hoặc n/a kèm lý do, ví dụ 'n/a: trang tĩnh không gọi API'."
+    },
     "routes": {
       "type": "array",
       "items": {

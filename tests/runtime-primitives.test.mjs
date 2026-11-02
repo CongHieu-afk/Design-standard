@@ -35,6 +35,7 @@ test('motion primitives preserve accessibility and lifecycle invariants', { time
       <button id="save">Lưu</button><dialog id="dialog"><button>Trong hộp thoại</button></dialog>`;
     const primitives = await import('/runtime/primitives.js');
     const { createLifecycleCoordinator } = await import('/runtime/lifecycle.js');
+    const { motionTokens } = await import('/runtime/motion.js');
 
     const tabs = document.querySelector('#tabs');
     const tabApi = primitives.initTabs({ container: tabs });
@@ -46,7 +47,12 @@ test('motion primitives preserve accessibility and lifecycle invariants', { time
       && tabButtons[0].tabIndex === -1
       && document.querySelector('#one').hidden
       && !document.querySelector('#two').hidden;
+    window.matchMedia = () => ({ matches: true });
+    tabApi.updateIndicator();
+    const reducedMotionOk = tabs.querySelector('.tab-indicator').style.transition === 'none';
     tabApi.dispose();
+    tabButtons[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    const tabDisposeOk = document.activeElement === tabButtons[1];
 
     const save = document.querySelector('#save');
     primitives.setButtonState(save, 'loading', { text: 'Đang lưu', revertAfter: 10 });
@@ -56,7 +62,6 @@ test('motion primitives preserve accessibility and lifecycle invariants', { time
 
     const opener = document.querySelector('#open');
     const dialog = document.querySelector('#dialog');
-    window.matchMedia = () => ({ matches: true });
     opener.focus();
     primitives.openDialog(dialog);
     primitives.closeDialog(dialog);
@@ -64,10 +69,11 @@ test('motion primitives preserve accessibility and lifecycle invariants', { time
     const dialogOk = !dialog.open && document.activeElement === opener;
 
     const NativeObserver = window.IntersectionObserver;
+    let disconnects = 0;
     window.IntersectionObserver = class {
       constructor(callback) { this.callback = callback; }
       observe(target) { this.callback([{ target, isIntersecting: true }]); }
-      disconnect() {}
+      disconnect() { disconnects++; }
     };
     let starts = 0; let stops = 0;
     const lifecycle = createLifecycleCoordinator(document.body, { start: () => starts++, stop: () => stops++ });
@@ -79,8 +85,20 @@ test('motion primitives preserve accessibility and lifecycle invariants', { time
     lifecycle.dispose();
     window.IntersectionObserver = NativeObserver;
 
-    return { tabsOk, buttonOk, dialogOk, starts, stops, running: lifecycle.isRunning() };
+    const { duration, ease } = motionTokens;
+    const tokenOk = JSON.stringify(Object.keys(duration)) === JSON.stringify(['press', 'feedback', 'enter', 'exit', 'move'])
+      && duration.press >= 100 && duration.press <= 150
+      && duration.feedback >= 120 && duration.feedback <= 180
+      && duration.enter >= 150 && duration.enter <= 300
+      && duration.exit >= 100 && duration.exit <= 220 && duration.exit < duration.enter
+      && duration.move >= 200 && duration.move <= 350
+      && JSON.stringify(Object.keys(ease)) === JSON.stringify(['enter', 'exit', 'move', 'feedback'])
+      && Object.values(ease).every((value) => typeof value === 'string' && value.length > 0);
+    return { tabsOk, tabDisposeOk, reducedMotionOk, tokenOk, buttonOk, dialogOk, starts, stops, disconnects, running: lifecycle.isRunning() };
   });
 
-  assert.deepEqual(result, { tabsOk: true, buttonOk: true, dialogOk: true, starts: 2, stops: 2, running: false });
+  assert.deepEqual(result, {
+    tabsOk: true, tabDisposeOk: true, reducedMotionOk: true, tokenOk: true,
+    buttonOk: true, dialogOk: true, starts: 2, stops: 2, disconnects: 1, running: false,
+  });
 });

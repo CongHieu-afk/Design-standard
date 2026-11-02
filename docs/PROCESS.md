@@ -6,7 +6,7 @@ Hiểu việc → Khai phạm vi → Test đỏ → Sửa nhỏ → Test xanh
 ```
 
 1. **Hiểu việc:** đọc `AGENTS.md`, `CONSTRAINTS.md`, yêu cầu người dùng và hướng dẫn gần file sửa.
-2. **Khai phạm vi:** cập nhật `design.config.json`; mỗi màn hình có `source`, `ready`, `states`, type, tier và expression.
+2. **Khai phạm vi:** cập nhật `design.config.json`: `uiRoots`; mỗi màn hình có `source`, `ready`, `states`, `stateCoverage`, type, tier và expression.
 3. **Thiết kế:** với thay đổi hướng thị giác, trình phương án và chờ người dùng chọn. Agent không tự đóng gate.
 4. **Thực hiện:** chia lát nhỏ; logic/bug fix có test assertion trước khi sửa.
 5. **Kiểm:** chạy test sát phạm vi sau mỗi lát; trước commit chạy `npm test`; trước push chạy `npm run verify` cùng build/audit của dự án tiêu thụ.

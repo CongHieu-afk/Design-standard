@@ -1,14 +1,15 @@
 {
-  "standard": "design_standard@3.0",
+  "standard": "design_standard@4.0",
   "language": ["vi"],
   "darkMode": false,
   "print": [],
   "tokens": "tokens.json",
+  "uiRoots": ["home.html", "admin-orders.html"],
   "preview": {"url": "http://localhost:8770", "command": "npx serve -l 8770 ."},
   "verify": {"commands": ["node --check ../../scripts/audit.mjs"]},
   "gates": "../design-gates",
   "screens": [
-    {"id": "home", "platform": "web", "path": "/home.html", "source": ["home.html"], "type": "home", "tier": "C", "expression": "E2", "ready": "main", "states": [], "ssr": true},
-    {"id": "admin-orders", "platform": "web", "path": "/admin-orders.html", "source": ["admin-orders.html"], "type": "list", "tier": "B", "expression": "E0", "ready": "main", "states": [], "input": "fine", "users": "nhân viên đóng gói"}
+    {"id": "home", "platform": "web", "path": "/home.html", "source": ["home.html"], "type": "home", "tier": "C", "expression": "E2", "ready": "main", "states": [], "stateCoverage": {"loading": "n/a: trang HTML tĩnh", "empty": "n/a: không có danh sách", "error": "n/a: không gọi API", "dialog": "n/a: không có hộp thoại"}, "ssr": true},
+    {"id": "admin-orders", "platform": "web", "path": "/admin-orders.html", "source": ["admin-orders.html"], "type": "list", "tier": "B", "expression": "E0", "ready": "main", "states": [], "stateCoverage": {"loading": "n/a: dữ liệu nhúng trong HTML", "empty": "n/a: ví dụ luôn có đơn", "error": "n/a: không gọi API", "dialog": "n/a: không có hộp thoại"}, "input": "fine", "users": "nhân viên đóng gói"}
   ]
 }

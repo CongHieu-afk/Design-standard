@@ -1,5 +1,5 @@
 {
-  "standard": "design_standard@3.0",
+  "standard": "design_standard@4.0",
   "language": [
     "vi"
   ],
@@ -8,6 +8,7 @@
     "admin-order-detail"
   ],
   "tokens": "tokens.json",
+  "uiRoots": ["src/", "lib/"],
   "preview": {
     "url": "http://localhost:4173",
     "command": "npm run build && npx vite preview --port 4173 --strictPort"
@@ -29,6 +30,7 @@
       "expression": "E2",
       "ready": "main",
       "states": [],
+      "stateCoverage": {"loading": "n/a: trang dựng phía máy chủ", "empty": "n/a: không có danh sách", "error": "n/a: không gọi API", "dialog": "n/a: không có hộp thoại"},
       "ssr": true
     },
     {
@@ -41,6 +43,7 @@
       "expression": "E1",
       "ready": "main",
       "states": [],
+      "stateCoverage": {"loading": "n/a: trang dựng phía máy chủ", "empty": "n/a: không có trạng thái rỗng", "error": "n/a: không gọi API", "dialog": "n/a: không có hộp thoại"},
       "ssr": true
     },
     {
@@ -53,6 +56,7 @@
       "expression": "E0",
       "ready": "form",
       "states": []
+      ,"stateCoverage": {"loading": "n/a: form dựng tại máy khách", "empty": "n/a: không có danh sách", "error": "n/a: lỗi hiển thị nội tuyến", "dialog": "n/a: không có hộp thoại"}
     },
     {
       "id": "admin-orders",
@@ -70,7 +74,8 @@
         { "id": "rong-do-loc", "viewports": ["320", "1440"], "steps": [{ "action": "fill", "selector": "input[type=search]", "value": "khongcodonnay" }], "ready": "text=Không có đơn" },
         { "id": "loi-api", "viewports": ["320", "1440"], "ready": "[role=alert]", "expectConsoleErrors": true, "route": [{ "url": "**/api/orders*", "status": 500, "body": { "message": "fixture" } }] },
         { "id": "dialog-huy-don", "viewports": ["1440"], "dialog": true, "steps": [{ "action": "click", "selector": "role=button[name=/Huỷ đơn/]" }] }
-      ]
+      ],
+      "stateCoverage": {"loading": "n/a: fixture trả ngay", "empty": "rong-do-loc", "error": "loi-api", "dialog": "dialog-huy-don"}
     },
     {
       "id": "admin-order-detail",
@@ -85,6 +90,7 @@
       "expression": "E0",
       "ready": "main",
       "states": [],
+      "stateCoverage": {"loading": "n/a: fixture trả ngay", "empty": "n/a: luôn có đơn fixture", "error": "n/a: ví dụ không mô phỏng API", "dialog": "n/a: không có hộp thoại"},
       "input": "fine"
     },
     {
@@ -97,6 +103,7 @@
       "expression": "E0",
       "ready": "form",
       "states": [],
+      "stateCoverage": {"loading": "n/a: form dựng tại máy khách", "empty": "n/a: không có danh sách", "error": "n/a: lỗi hiển thị nội tuyến", "dialog": "n/a: không có hộp thoại"},
       "input": "fine",
       "users": "kế toán"
     },
@@ -108,7 +115,8 @@
       "type": "detail",
       "tier": "C",
       "expression": "E1",
-      "states": []
+      "states": [],
+      "stateCoverage": {"loading": "n/a: widget test tự cấp dữ liệu", "empty": "n/a: fixture luôn có đơn", "error": "n/a: ví dụ không mô phỏng API", "dialog": "n/a: không có hộp thoại"}
     }
   ]
 }

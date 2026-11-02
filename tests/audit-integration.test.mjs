@@ -23,8 +23,21 @@ test('full audit refuses to baseline a major finding', { timeout: 120_000 }, asy
   t.after(() => fs.rmSync(temp, { recursive: true, force: true }));
 
   const html = `<!doctype html><html lang="vi"><head><meta charset="utf-8">
-    <style>body{font:16px/1.6 Arial;margin:24px}button{min-width:48px;min-height:48px}</style>
-    </head><body><main><h1>Trang kiểm thử</h1><button id="action">Thực hiện</button></main></body></html>`;
+    <style>
+      body{font:16px/1.6 Arial;margin:24px}button{min-width:48px;min-height:48px}
+      @keyframes shake{to{transform:translateX(40px)}}
+      @keyframes drift{to{left:40px}}
+      @keyframes logical{to{margin-inline-start:40px}}
+      @keyframes grid-shift{to{grid-template-columns:2fr 1fr}}
+      @keyframes fade{to{opacity:.8}}
+      #action{animation:shake 2s infinite}
+      #finite{animation:shake 100ms 4 both}
+      #position{position:relative;animation:drift 2s infinite}
+      #logical{animation:logical 2s infinite}
+      #grid{display:grid;grid-template-columns:1fr 1fr;animation:grid-shift 2s infinite}
+      #fade{animation:fade 150ms 1 both}
+    </style>
+    </head><body><main><h1>Trang kiểm thử</h1><button id="action">Thực hiện</button><button id="finite">Hữu hạn</button><button id="position">Vị trí</button><button id="logical">Logic</button><button id="fade">Mờ ngắn</button><div id="grid"><span>A</span><span>B</span></div></main></body></html>`;
   const server = http.createServer((_request, response) => {
     response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
     response.end(html);
@@ -34,15 +47,20 @@ test('full audit refuses to baseline a major finding', { timeout: 120_000 }, asy
   const { port } = server.address();
 
   const config = {
-    standard: 'design_standard@3.0',
+    standard: 'design_standard@4.0',
     language: ['vi'],
     tokens: 'tokens.json',
+    uiRoots: ['src/'],
     preview: { url: `http://127.0.0.1:${port}`, command: 'npm run preview' },
     verify: { commands: ['npm test'] },
     screens: [{
       id: 'home', platform: 'web', path: '/', source: ['src/home/'], type: 'home',
       tier: 'C', expression: 'E0', ready: 'main', ssr: true,
       states: [{ id: 'tuong-tac', viewports: ['320'], steps: [{ action: 'click', selector: '#action' }] }],
+      stateCoverage: {
+        loading: 'n/a: trang tĩnh', empty: 'n/a: không có danh sách',
+        error: 'n/a: không gọi API', dialog: 'n/a: không có hộp thoại',
+      },
     }],
   };
   fs.writeFileSync(path.join(temp, 'design.config.json'), JSON.stringify(config));
@@ -57,4 +75,10 @@ test('full audit refuses to baseline a major finding', { timeout: 120_000 }, asy
   assert.match(result.output, /Baseline chỉ nhận minor/);
   const report = JSON.parse(fs.readFileSync(path.join(temp, 'audit-out/audit_report.json'), 'utf8'));
   assert.ok(report.findings.some((finding) => finding.rule === 'state-thieu-expectFocus' && finding.severity === 'major'));
+  assert.ok(report.findings.some((finding) => finding.rule === 'reduced-motion-active' && finding.severity === 'major'));
+  assert.ok(report.findings.some((finding) => finding.rule === 'reduced-motion-active' && finding.targets.some((target) => target.includes('#finite'))));
+  assert.ok(report.findings.some((finding) => finding.rule === 'reduced-motion-active' && finding.targets.some((target) => target.includes('#position'))));
+  assert.ok(report.findings.some((finding) => finding.rule === 'reduced-motion-active' && finding.targets.some((target) => target.includes('#logical'))));
+  assert.ok(report.findings.some((finding) => finding.rule === 'reduced-motion-active' && finding.targets.some((target) => target.includes('#grid'))));
+  assert.ok(!report.findings.some((finding) => finding.rule === 'reduced-motion-active' && finding.targets.some((target) => target.includes('#fade'))));
 });

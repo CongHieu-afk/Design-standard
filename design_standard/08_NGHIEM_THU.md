@@ -6,7 +6,7 @@ File này là **nguồn duy nhất** cho việc kiểm gì, ở hạng nào, m�
 
 Kích thước theo ma trận [03B §0](03B_NEN_TANG_THIET_BI.md#0-ma-trận-kích-thước-kiểm-định); thêm theme tối khi `darkMode: true`. Web: chạy trên bản đã build, phục vụ qua http (`vite preview`, `next start`, `npx serve dist`), không `file://`. Một **nguyên nhân** chỉ báo một lần (ví dụ một cặp màu thiếu tương phản), kèm số phần tử bị ảnh hưởng và danh sách kích thước/theme gặp lỗi.
 
-**Trạng thái:** đo trạng thái đầu **và** các trạng thái loại trang yêu cầu (03 "Kiểm riêng": dialog chính, rỗng do lọc, lỗi API…), khai báo trong `states` của `design.config.json`, dữ liệu bằng fixture (`route`), không dùng dữ liệu thật. Mỗi màn hình khai báo `ready` để không đo trên khung xương hay hộp đăng nhập. `audit.mjs` chỉ in "Chưa kiểm" cho những gì nó biết (không có `states`, không có state `dialog`); **người làm** đối chiếu danh sách "Trạng thái" và "Kiểm riêng" của 03 với `states`, và mọi `role="dialog"` trong mã, rồi ghi phần thiếu vào "Chưa kiểm".
+**Trạng thái:** đo trạng thái đầu và các trạng thái loại trang yêu cầu (dialog, rỗng, lỗi API…), khai trong `states`, dữ liệu bằng fixture. `stateCoverage` phải ánh xạ loading/empty/error/dialog tới state id; mục không áp dụng ghi `n/a:` kèm lý do để reviewer thấy rõ giả định. Máy xác nhận khai báo nhất quán; người duyệt vẫn phải đối chiếu với mã vì agent có thể khai sai sự thật.
 
 Cột "Có sẵn": ✓ = script trong bộ chuẩn đã làm; ○ = cần công cụ ngoài hoặc kiểm tay — chưa làm thì ghi vào "Chưa kiểm" của báo cáo.
 
@@ -21,7 +21,7 @@ Cột "Có sẵn": ✓ = script trong bộ chuẩn đã làm; ○ = cần công 
 | W5 | Bàn phím: Tab qua trang, focus nhìn thấy, không kẹt. Dialog: focus vào trong, có tên, Escape đóng, focus về nút mở | `audit.mjs` (dialog: state có `"dialog": true`) + xem lại bằng mắt | ✓ | Kẹt: Blocker; focus không thấy: A Blocker, B/C Major; dialog: A Blocker, B/C Major |
 | W6 | Lỗi JS, trang trả mã lỗi | `audit.mjs` | ✓ | Blocker |
 | W7 | Tài nguyên lỗi (404, mất kết nối) | `audit.mjs` | ✓ | Major |
-| W8 | Chữ không nhìn thấy khi giảm chuyển động | `audit.mjs` | ✓ | E2–E3: Blocker; E0–E1: Major |
+| W8 | Giảm chuyển động: chữ không bị ẩn; chuyển động hình học > 300ms hoặc lặp vô hạn được triệt giảm | `audit.mjs` | ✓ | E2–E3: Blocker; E0–E1: Major |
 | W9 | Line-height tiếng Việt | `audit.mjs` | ✓ | Major |
 | W10 | Lorem, dữ liệu mẫu, thuật ngữ nội bộ, địa chỉ dev (`localhost`) lộ ra | `audit.mjs`; thuật ngữ riêng của dự án khai báo ở `internalTerms` | ✓ | Major |
 | W11 | Phóng to 200% (SC 1.4.4: khung nhìn 640×400, mật độ 2) và text-spacing (SC 1.4.12): chữ bị cắt trong khung `overflow: hidden/clip`, tràn ngang | `audit.mjs`; ảnh `*_zoom200.png`, `*_text-spacing.png` | ✓ | Máy báo Major; người kiểm xác nhận mất nội dung → Blocker |
@@ -33,7 +33,7 @@ Cột "Có sẵn": ✓ = script trong bộ chuẩn đã làm; ○ = cần công 
 | W16 | E2–E3: không khung hình > 50ms lặp lại khi cuộn; độ trễ tương tác ≤ 200ms khi animation chạy; E3: đi qua mọi vị trí cuộn bằng ảnh liên tiếp, không cuộn chết | DevTools Performance trên mobile tầm trung | ○ | Major |
 | W18 | Giá trị ngoài token trong mã: màu/px viết cứng, Tailwind giá trị tuỳ ý (`text-[#…]`, `p-[13px]`), màu có sẵn của Tailwind (`zinc-`, `indigo-`…) dùng thẳng | stylelint + `stylelint-declaration-strict-value` (CSS); Tailwind: `rg -n "\b[a-z-]+-\[[^\]]+\]" src` rồi lọc tay, hoặc luật `no-arbitrary-value` của `eslint-plugin-tailwindcss` (12 §5.3) | ○ | Major ở mã mới; mã cũ theo 01 "Giao diện cũ" |
 | W17 | Dấu hiệu slop bề mặt (07 §4) | `audit.mjs --impeccable` (gọi `impeccable detect` qua cổng DevTools; [12 §5.4](12_BAN_DO_CONG_CU.md#54-impeccable-dùng-detect-không-cài-skill-tự-kích-hoạt)) + người xem theo phép thử 07 §7 — máy **không** bắt G2-01, G2-10, G2-14, G2-15, G3-12 | ✓* | Máy báo Minor. Người duyệt xác nhận từng mã: **bậc cấm** (07 §4) đúng → **Major** (luồng chính hạng A: Blocker); **bậc tiết chế** → ghi "trong liều" (không sửa) hoặc "vượt liều" (Minor; ≥ 3 vượt liều không lý do trên một màn → Major). Máy báo nhầm ghi lý do, không tính |
-| W19 | Hồi quy primitive chuyển động dùng chung: tab bằng bàn phím + roving focus, timer trạng thái nút, dialog giảm chuyển động/trả focus, lifecycle ẩn/hiện/dispose | `node --test tests/runtime-primitives.test.mjs` (assertion + Playwright; sai → mã thoát 1) | ✓ | Lỗi tương ứng W5/W6 giữ mức của W5/W6; còn lại Major |
+| W19 | Primitive dùng chung: tab/roving focus, reduced motion, timer nút, dialog/trả focus, motion-token và cleanup listener/observer | `node --test tests/runtime-primitives.test.mjs` (assertion + Playwright) | ✓ | Lỗi W5/W6 giữ mức tương ứng; còn lại Major |
 
 \* Thiếu `@axe-core/playwright` thì `audit.mjs` dừng (mã 2); chỉ khi chạy với `--allow-no-axe` mới ghi W2 "Chưa kiểm" và đi tiếp — không coi là đạt. Web dựng bằng Flutter (`stack: "flutter"`): W2–W10 không áp dụng; chạy bảng Flutter F1–F6 ở kích thước logic 320/768/1440 và kiểm tay theo §3.
 

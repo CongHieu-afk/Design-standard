@@ -65,7 +65,7 @@ const { values } = parseArgs({
 });
 // Phiên bản impeccable được ghim: npx không tự lấy bản mới nhất (mã chạy cạnh phiên đăng nhập qua cổng DevTools).
 const IMPECCABLE_VERSION = '4.8.0';
-const STANDARD = 'design_standard@3.0';
+const STANDARD = 'design_standard@4.0';
 
 function fail(msg) {
   console.error(`Lỗi: ${msg}`);
@@ -128,8 +128,8 @@ if (!screens.length) {
 }
 // Kiểm config TRƯỚC khi mở trình duyệt: lỗi config là mã 2, không bao giờ là "có blocker".
 // Khoá gõ sai (ví dụ "redy", "darkmode") bị bỏ qua im lặng thì ready/theme tối/states mất mà không ai biết.
-const ROOT_KEYS = new Set(['$schema', 'standard', 'language', 'darkMode', 'themeStorage', 'initStorage', 'internalTerms', 'impeccable', 'print', 'baseline', 'exceptions', 'tokens', 'preview', 'verify', 'screens', 'auth', 'gates']);
-const SCREEN_KEYS = new Set(['id', 'platform', 'path', 'source', 'params', 'type', 'tier', 'expression', 'users', 'input', 'stack', 'ssr', 'ready', 'initStorage', 'route', 'states']);
+const ROOT_KEYS = new Set(['$schema', 'standard', 'language', 'darkMode', 'themeStorage', 'initStorage', 'internalTerms', 'impeccable', 'print', 'baseline', 'exceptions', 'tokens', 'uiRoots', 'preview', 'verify', 'screens', 'auth', 'gates']);
+const SCREEN_KEYS = new Set(['id', 'platform', 'path', 'source', 'params', 'type', 'tier', 'expression', 'users', 'input', 'stack', 'ssr', 'ready', 'initStorage', 'route', 'states', 'stateCoverage']);
 const STATE_KEYS = new Set(['id', 'viewports', 'ready', 'expectConsoleErrors', 'route', 'dialog', 'steps', 'expectFocus', 'expectUrl']);
 const ROUTE_KEYS = new Set(['url', 'status', 'contentType', 'body', 'file', 'delayMs']);
 const STEP_KEYS = new Set(['action', 'selector', 'value', 'key', 'ms', 'timeout']);
@@ -394,6 +394,24 @@ async function checkPage(page, ctxInfo) {
       if (op < 0.1 || clipped) {
         flagged.add(el);
         out.push({ rule: 'hidden-content-reduced-motion', severity: 'motion', target: sel(el), msg: 'Chữ không nhìn thấy (opacity ≈ 0 hoặc bị clip-path) khi bật giảm chuyển động' });
+      }
+    }
+    // Giảm chuyển động vẫn cho phép phản hồi nhỏ/fade ngắn; chặn chuyển động hình học dài hoặc lặp vô hạn.
+    for (const animation of document.getAnimations()) {
+      if (!animation.effect) continue;
+      const timing = animation.effect.getComputedTiming();
+      const iterations = Number(timing.iterations);
+      const activeDuration = Number(timing.activeDuration ?? Number(timing.duration) * iterations);
+      const longRunning = !Number.isFinite(activeDuration) || activeDuration > 300;
+      const frames = typeof animation.effect.getKeyframes === 'function' ? animation.effect.getKeyframes() : [];
+      const metadata = new Set(['offset', 'computedOffset', 'easing', 'composite']);
+      const paintOnly = new Set(['opacity', 'fill', 'stroke', 'boxShadow', 'textShadow']);
+      const movesGeometry = frames.some((frame) => Object.keys(frame).some((key) => (
+        !metadata.has(key) && !paintOnly.has(key) && !key.toLowerCase().endsWith('color')
+      )));
+      if (longRunning && movesGeometry) {
+        const target = animation.effect.target;
+        out.push({ rule: 'reduced-motion-active', severity: 'motion', target: target ? sel(target) : 'animation', msg: 'Chuyển động hình học dài hoặc lặp chưa được triệt giảm khi bật giảm chuyển động' });
       }
     }
     // Line-height tiếng Việt

@@ -9,8 +9,8 @@ test/build dự án → token → gate files → audit đầy đủ → CI → r
 `design.config.json` phải khai:
 
 - `verify.commands`: lệnh test/build thật của dự án;
-- `tokens`, `preview.url`, `preview.command`;
-- mọi `screens`, mỗi màn có `source`, `ready`, `states`, type, tier, expression;
+- `tokens`, `uiRoots`, `preview.url`, `preview.command`;
+- mọi `screens`, mỗi màn có `source`, `ready`, `states`, `stateCoverage`, type, tier, expression;
 - `gates` khi có màn E2/E3.
 
 Chạy:
@@ -22,7 +22,7 @@ node design_standard/scripts/verify-project.mjs \
   --run
 ```
 
-Lệnh trên fail khi test/build, token, gate, source coverage hoặc audit thất bại. Preview phải chạy bằng `preview.command` trước khi gọi.
+Lệnh trên fail khi test/build, token, gate, state inventory, source trong `uiRoots` hoặc audit thất bại. Preview phải chạy bằng `preview.command` trước khi gọi.
 
 ## Script
 

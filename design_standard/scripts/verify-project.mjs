@@ -9,7 +9,7 @@ import { validateChangedCoverage, validateManifest } from './governance-core.mjs
 
 export function inspectProject(config, changedFiles = []) {
   const problems = validateManifest(config);
-  for (const file of validateChangedCoverage(changedFiles, config?.screens || [])) {
+  for (const file of validateChangedCoverage(changedFiles, config?.screens || [], config?.uiRoots || [])) {
     problems.push(`UI source chưa thuộc screen nào: ${file}`);
   }
   return { ok: problems.length === 0, problems };

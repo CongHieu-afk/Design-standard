@@ -16,7 +16,7 @@ Nếu hai luật cùng cấp mâu thuẫn: dừng và hỏi. Không tự chọn 
 1. Đọc file này, `CONSTRAINTS.md` và hướng dẫn gần phạm vi sửa.
 2. Xác định file, người dùng và luồng bị ảnh hưởng; giữ nguyên thay đổi không liên quan.
 3. Việc UI: đọc [quy trình ngắn](docs/PROCESS.md), rồi chỉ mở chương cần thiết trong [bản đồ tài liệu](docs/REFERENCE_MAP.md).
-4. Khai mọi màn hình UI và đường dẫn nguồn trong `design.config.json`. File UI đổi mà không thuộc màn hình đã khai báo là lỗi.
+4. Trong `design.config.json`, khai `uiRoots`, source của mọi màn hình và `stateCoverage` cho loading/empty/error/dialog. File trong `uiRoots` đổi mà không thuộc screen là lỗi; state không áp dụng phải ghi `n/a:` kèm lý do.
 5. Tạo nhật ký riêng `handoffs/YYYY-MM-DDTHHMMSSZ-<agent>-<slug>.md`. Không sửa nhật ký của phiên khác.
 
 ## 3. Trong khi sửa

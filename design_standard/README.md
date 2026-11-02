@@ -56,7 +56,7 @@ PO chỉ cần quyết ở các cổng: G0 brief, G1 cấu trúc (làn L), G2 h�
 
 ## Dùng trong một dự án
 
-1. Ghim repo này theo commit cạnh dự án (ghi trong `design.config.json`: `"standard": "design_standard@3.0"`). Không sao chép rời checker khỏi policy.
+1. Ghim repo này theo commit cạnh dự án (ghi trong `design.config.json`: `"standard": "design_standard@4.0"`). Không sao chép rời checker khỏi policy.
 2. Tạo `design.config.json` từ [scripts/design.config.example.json](scripts/design.config.example.json) ([02 §4](02_PHAN_CAP.md#4-khai-báo-cấu-hình)).
 3. Thêm hai script `ui:tokens`, `ui:audit` ([09 §2](09_CONG_CU.md#2-script-trong-bộ-chuẩn)); dự án Flutter thêm `test/ui_standard/` từ mẫu.
 4. Thêm vào `CLAUDE.md`/`AGENTS.md` của dự án: `Làm giao diện theo design_standard/AGENTS.md`. Trong kho PRACTICE đã có skill `design-standard` (`.claude/skills/`, `.agents/skills/`).

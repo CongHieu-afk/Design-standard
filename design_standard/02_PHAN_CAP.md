@@ -65,87 +65,34 @@ Ngân sách hiệu năng mọi mức: Core Web Vitals "tốt" ở phân vị 75 
 
 ```json
 {
-  "standard": "design_standard@3.0",
-  "language": [
-    "vi"
-  ],
-  "darkMode": false,
-  "print": [
-    "admin-order-detail"
-  ],
+  "standard": "design_standard@4.0",
+  "language": ["vi"],
   "tokens": "tokens.json",
+  "uiRoots": ["src/"],
   "preview": {
     "url": "http://localhost:4173",
     "command": "npm run build && npx vite preview --port 4173 --strictPort"
   },
-  "baseline": "a11y-baseline.json",
-  "exceptions": "design-exceptions.json",
+  "verify": {
+    "commands": ["npm test", "npm run build"]
+  },
   "screens": [
     {
       "id": "home",
       "platform": "web",
       "path": "/",
+      "source": ["src/pages/home/"],
       "type": "home",
       "tier": "C",
-      "expression": "E2",
-      "ssr": true
-    },
-    {
-      "id": "catalog",
-      "platform": "web",
-      "path": "/san-pham",
-      "type": "commerce",
-      "tier": "C",
-      "expression": "E1",
-      "ssr": true
-    },
-    {
-      "id": "checkout",
-      "platform": "web",
-      "path": "/thanh-toan",
-      "type": "checkout",
-      "tier": "A",
-      "expression": "E0"
-    },
-    {
-      "id": "admin-orders",
-      "platform": "web",
-      "path": "/admin/don-hang",
-      "type": "list",
-      "tier": "B",
       "expression": "E0",
-      "input": "fine",
-      "users": "nhân viên kho"
-    },
-    {
-      "id": "admin-order-detail",
-      "platform": "web",
-      "path": "/admin/don-hang/:id",
-      "params": {
-        "id": "DH-1042"
-      },
-      "type": "detail",
-      "tier": "B",
-      "expression": "E0",
-      "input": "fine"
-    },
-    {
-      "id": "admin-refund",
-      "platform": "web",
-      "path": "/admin/hoan-tien",
-      "type": "form",
-      "tier": "A",
-      "expression": "E0",
-      "input": "fine",
-      "users": "kế toán"
-    },
-    {
-      "id": "app-order-tracking",
-      "platform": "mobile",
-      "stack": "flutter",
-      "type": "detail",
-      "tier": "C",
-      "expression": "E1"
+      "ready": "main",
+      "states": [],
+      "stateCoverage": {
+        "loading": "n/a: trang tĩnh không gọi API",
+        "empty": "n/a: trang không có danh sách",
+        "error": "n/a: trang tĩnh không gọi API",
+        "dialog": "n/a: trang không có hộp thoại"
+      }
     }
   ]
 }

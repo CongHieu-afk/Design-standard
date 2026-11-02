@@ -15,6 +15,10 @@ const safeRead = (root, file, problems) => {
 const trustedRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const normalize = (text) => text.replace(/\r\n/g, '\n');
 const digest = (text) => crypto.createHash('sha256').update(normalize(text)).digest('hex');
+const manifestDigest = (value) => {
+  if (!/^sha256:(?:[a-f0-9]{8}-){7}[a-f0-9]{8}$/.test(value)) return null;
+  return value.slice('sha256:'.length).replaceAll('-', '');
+};
 
 function verifyTrustRoot(candidateRoot, problems) {
   const file = '.github/trusted-policy.json';
@@ -29,14 +33,14 @@ function verifyTrustRoot(candidateRoot, problems) {
   for (const [protectedFile, allowed] of Object.entries(trusted.files || {})) {
     const text = safeRead(candidateRoot, protectedFile, problems);
     const hash = digest(text);
-    if (!Array.isArray(allowed) || !allowed.includes(hash)) {
+    if (!Array.isArray(allowed) || !allowed.map(manifestDigest).includes(hash)) {
       problems.push(`${protectedFile} đổi trust root khi hash chưa được duyệt ở PR trước`);
     }
   }
   for (const [protectedFile, allowed] of Object.entries(candidate.files || {})) {
     const text = safeRead(candidateRoot, protectedFile, problems);
     const hash = digest(text);
-    if (!Array.isArray(allowed) || !allowed.every((item) => /^[a-f0-9]{64}$/.test(item)) || !allowed.includes(hash)) {
+    if (!Array.isArray(allowed) || !allowed.every(manifestDigest) || !allowed.map(manifestDigest).includes(hash)) {
       problems.push(`${file}: ${protectedFile} phải chứa hash hiện tại và chỉ gồm SHA-256`);
     }
   }

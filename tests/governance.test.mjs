@@ -85,3 +85,17 @@ test('all client adapters point to the canonical root policy', async () => {
     assert(text.split(/\r?\n/).length <= 20, `${file} must stay a short adapter`);
   }
 });
+
+test('CI pins an operating system supported by the locked Playwright version', async () => {
+  for (const file of [
+    '.github/workflows/verify.yml',
+    '.github/workflows/policy-guard.yml',
+    'design_standard/scripts/ci/ui-standard.github.yml',
+  ]) {
+    const workflow = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.doesNotMatch(workflow, /runs-on:\s*ubuntu-latest/, `${file} must not drift to an unsupported OS`);
+    assert.match(workflow, /runs-on:\s*ubuntu-24\.04/, `${file} must pin Ubuntu 24.04`);
+  }
+  const verifier = await readFile(new URL('../.github/workflows/verify.yml', import.meta.url), 'utf8');
+  assert.match(verifier, /playwright install --with-deps chromium/);
+});

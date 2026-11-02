@@ -14,11 +14,17 @@
 
 ## Kiểm chứng
 
-- `npm test`: 12/12 đạt.
+- `npm test`: 13/13 đạt.
 - `npm run check:policy`: đạt.
 - `npm run check:syntax`: đạt.
 - Mutation baseline minor→major: test đỏ đúng dự kiến; mã đã hoàn nguyên.
 - `npm audit`: 0 lỗ hổng.
+
+## Sửa CI sau khi mở PR #1
+
+- GitHub `ubuntu-latest` chuyển sang Ubuntu 26.04, không được Playwright 1.59.1 hỗ trợ.
+- Ghim CI chính, policy guard và workflow mẫu về `ubuntu-24.04`.
+- Thêm assertion cấm `ubuntu-latest` tái xuất hiện; `npm run verify` đạt sau sửa.
 
 ## Còn ngoài repo
 

@@ -12,7 +12,8 @@ permissions:
 
 jobs:
   verify-ui:
-    runs-on: ubuntu-latest
+    # Đồng bộ với Playwright 1.59.1; tránh ubuntu-latest trôi sang Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

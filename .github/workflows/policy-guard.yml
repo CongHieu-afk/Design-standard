@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   guard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout trusted policy from base
         uses: actions/checkout@v4

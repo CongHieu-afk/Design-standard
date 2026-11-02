@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đơn hàng · Quản trị Rang Mộc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=IBM+Plex+Mono:wght@400;500&subset=vietnamese&display=swap" rel="stylesheet">
+<!-- TRANG MẪU THAM CHIẾU (E0, list, hạng B). Thương hiệu và dữ liệu là HƯ CẤU. Cùng token với home.html.
+     Quyết định đặc trưng ở màn hình tác vụ: chỉ qua chữ, màu, mật độ và một chi tiết — đường nhiệt mini của mẻ đang đóng gói ở đầu trang. Cột Mẻ rang chỉ cảnh báo khi hạt ≥ 7 ngày.
+     Điều khiển giữ chuẩn: bảng, select, ô tìm, checkbox, nút. -->
+<style>
+:root {
+  --ink: #15181a; --ink-2: #4a5157; --ink-3: #6b7279;
+  --ground: #f3f4f1; --surface: #ffffff; --line: #d5d8d3;
+  --accent: #11553f; --accent-soft: #e3eee9; --signal: #b42318; --signal-soft: #fdecea; --warn: #7a4a00; --warn-soft: #fff4df;
+  --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.5; }
+::selection { background: var(--accent); color: #fff; }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.skip { position: absolute; left: 16px; top: -100px; background: var(--surface); padding: 0 16px; min-height: 44px; display: inline-flex; align-items: center; }
+.skip:focus { top: 16px; }
+.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+.shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); min-height: 100vh; }
+.rail { background: var(--ink); color: #fff; padding: 20px 12px; }
+.rail .brand { font-weight: 800; font-size: 16px; font-variation-settings: "wdth" 125; padding: 0 12px 20px; display: block; line-height: 1.3; }
+.rail ul { list-style: none; margin: 0; padding: 0; }
+.rail a { display: flex; align-items: center; min-height: 36px; padding: 0 12px; color: #d9dcd8; text-decoration: none; border-radius: 4px; line-height: 1.4; }
+.rail a:hover { background: #262a2d; color: #fff; }
+.rail a[aria-current="page"] { background: var(--accent); color: #fff; font-weight: 600; }
+.rail :focus-visible { outline-color: #fff; }
+
+main { padding: 24px 32px 48px; min-width: 0; }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+h1 { font-size: 24px; line-height: 1.3; margin: 0; font-weight: 700; font-variation-settings: "wdth" 90; }
+.page-head p { margin: 4px 0 0; color: var(--ink-2); }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 4px; font: inherit; font-weight: 600; line-height: 1.4; cursor: pointer; border: 1px solid var(--ink-3); background: var(--surface); color: var(--ink); }
+.btn:hover { background: var(--ground); }
+.btn:disabled { color: var(--ink-3); border-color: var(--line); background: transparent; cursor: not-allowed; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { background: #0c3f2f; }
+.btn-link { border: 0; background: none; color: var(--accent); padding: 0 4px; text-decoration: underline; text-underline-offset: 3px; min-height: 28px; font-weight: 600; }
+.btn-link:hover { background: none; color: #0c3f2f; }
+
+.todo { display: flex; gap: 8px 16px; flex-wrap: wrap; align-items: center; padding: 10px 14px; background: var(--warn-soft); color: var(--warn); border-radius: 4px; margin-bottom: 16px; }
+.todo strong { color: var(--ink); }
+.todo .btn-link { color: var(--warn); }
+
+.filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin-bottom: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--ink-2); line-height: 1.4; }
+.field input, .field select { min-height: 36px; padding: 0 10px; border: 1px solid var(--ink-3); border-radius: 4px; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; line-height: 1.4; }
+.field input { width: 240px; }
+.filters .count { margin-left: auto; color: var(--ink-2); }
+
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+table { width: 100%; border-collapse: collapse; }
+caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+thead th { position: sticky; top: 0; background: var(--surface); z-index: 1; text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-2); padding: 0 12px; height: 36px; border-bottom: 1px solid var(--ink); white-space: nowrap; }
+thead th button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; min-height: 28px; display: inline-flex; align-items: center; gap: 4px; }
+tbody th, tbody td { padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: left; font-weight: 400; line-height: 1.4; }
+tbody tr:last-child > * { border-bottom: 0; }
+tbody tr:hover { background: #f8f9f7; }
+tbody tr.is-selected { background: var(--accent-soft); }
+.right { text-align: right !important; }
+.sel { width: 36px; }
+.sel input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.code a { font-weight: 500; display: inline-flex; align-items: center; min-height: 24px; }
+.mini { width: 40px; height: 15px; }
+.mini path { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.mini circle { fill: var(--signal); }
+.head-batch { display: flex; align-items: center; gap: 8px; } .head-batch .mini { width: 64px; height: 24px; flex: none; }
+.batch .muted { color: var(--ink-2); }
+.batch a { display: inline-flex; align-items: center; min-height: 24px; color: var(--ink); }
+.stale { display: inline-block; margin-left: 8px; padding: 0 6px; border-radius: 4px; background: var(--warn-soft); color: var(--warn); font-size: 12px; font-weight: 600; line-height: 1.6; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; white-space: nowrap; }
+.status svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.status.warn { color: var(--warn); } .status.accent { color: var(--accent); } .status.danger { color: var(--signal); } .status.neutral { color: var(--ink); } .status.muted { color: var(--ink-2); }
+td.late { color: var(--signal); font-weight: 600; }
+.icon-btn { width: 32px; height: 32px; display: inline-grid; place-items: center; border: 1px solid transparent; border-radius: 4px; background: none; cursor: pointer; color: var(--ink-2); }
+.icon-btn:hover { border-color: var(--line); color: var(--ink); }
+.icon-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.empty { padding: 32px 16px; text-align: left; color: var(--ink-2); }
+.empty p { margin: 0 0 8px; }
+
+.bulk { position: sticky; bottom: 0; display: none; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 14px; background: var(--ink); color: #fff; border-radius: 4px; margin-top: 12px; }
+.bulk.on { display: flex; }
+.bulk .btn { background: transparent; color: #fff; border-color: #8a9096; }
+.bulk .btn:hover { background: #262a2d; }
+.bulk :focus-visible { outline-color: #fff; }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; color: var(--ink-2); flex-wrap: wrap; }
+.toast { position: fixed; right: 24px; bottom: 24px; display: none; gap: 12px; align-items: center; background: var(--ink); color: #fff; padding: 10px 14px; border-radius: 4px; }
+.toast.on { display: flex; }
+.toast .btn-link { color: #fff; }
+.toast :focus-visible { outline-color: #fff; }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .rail { padding: 8px 12px; }
+  .rail .brand { padding: 6px 12px 8px; }
+  .rail ul { display: flex; flex-wrap: wrap; gap: 4px; }
+  main { padding: 16px; }
+  .field input { width: 100%; }
+  .field { flex: 1 1 160px; }
+  .filters .count { margin-left: 0; width: 100%; }
+}
+@media (max-width: 760px) {
+  body { font-size: 15px; }
+  thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table, tbody, tr, tbody td, tbody th { display: block; }
+  tbody tr { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "sel code act" "rest rest rest"; padding: 12px; border-bottom: 1px solid var(--line); }
+  tbody tr > * { border: 0 !important; padding: 2px 0 !important; }
+  tbody td.sel { grid-area: sel; padding-right: 10px !important; }
+  tbody th.code { grid-area: code; }
+  tbody td.act { grid-area: act; }
+  tbody td[data-label] { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 12px; text-align: right; }
+  tbody td[data-label]::before { content: attr(data-label); color: var(--ink-2); text-align: left; }
+  .batch { flex-wrap: wrap; }
+  .icon-btn { width: 44px; height: 44px; }
+  .field input, .field select, .btn { min-height: 44px; font-size: 16px; }
+  .sel input { width: 24px; height: 24px; }
+  .code a { min-height: 44px; }
+}
+@media print { .rail, .filters, .bulk, .todo, .act, .sel { display: none !important; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Bỏ qua tới nội dung chính</a>
+<div class="shell">
+  <nav class="rail" aria-label="Quản trị">
+    <span class="brand">Rang Mộc</span>
+    <ul>
+      <li><a href="#main" aria-current="page">Đơn hàng</a></li>
+      <li><a href="lo-rang.html">Lô rang</a></li>
+      <li><a href="san-pham.html">Sản phẩm</a></li>
+      <li><a href="khach-hang.html">Khách hàng</a></li>
+      <li><a href="bao-cao.html">Báo cáo</a></li>
+    </ul>
+  </nav>
+  <main id="main">
+    <div class="page-head">
+      <div>
+        <h1>Đơn hàng</h1>
+        <p class="head-batch"><svg class="mini" viewBox="0 0 64 24" aria-hidden="true"><path d="M1.0 5.6 L3.5 14.9 L6.1 18.0 L8.6 19.0 L11.1 17.8 L13.7 16.5 L16.2 15.2 L18.7 14.0 L21.3 12.9 L23.8 11.9 L26.3 10.9 L28.8 9.9 L31.4 9.1 L33.9 8.3 L36.4 7.6 L39.0 6.9 L41.5 6.4 L44.0 5.9 L46.6 5.6 L49.1 5.3 L51.6 5.2"/><circle cx="42.9" cy="6.1" r="2"/></svg><span>Thứ Tư 28/10 · đóng gói mẻ 40–45, rang thứ Ba 27/10</span></p>
+      </div>
+      <button type="button" class="btn">Xuất CSV</button>
+    </div>
+
+    <p class="todo"><strong>Cần làm trước 17:00:</strong> <button type="button" class="btn-link" data-quick="cho-dong-goi">3 đơn chờ đóng gói</button> · <button type="button" class="btn-link" data-quick="giao-loi">1 đơn giao lỗi</button></p>
+
+    <form class="filters" role="search" aria-label="Lọc đơn hàng" onsubmit="return false">
+      <div class="field"><label for="q">Tìm mã đơn, tên khách</label><input id="q" name="q" type="search" autocomplete="off" placeholder="Ví dụ: DH-1046"></div>
+      <div class="field"><label for="status">Trạng thái</label>
+        <select id="status" name="status">
+          <option value="">Tất cả</option>
+          <option value="cho-dong-goi">Chờ đóng gói</option>
+          <option value="da-dong-goi">Đã đóng gói</option>
+          <option value="dang-giao">Đang giao</option>
+          <option value="giao-loi">Giao lỗi</option>
+          <option value="da-giao">Đã giao</option>
+        </select></div>
+      <div class="field"><label for="batch">Mẻ rang</label>
+        <select id="batch" name="batch">
+          <option value="">Tất cả</option><option value="42">Mẻ 42</option><option value="43">Mẻ 43</option><option value="44">Mẻ 44</option><option value="38">Mẻ 38</option>
+        </select></div>
+      <button type="submit" class="btn">Lọc</button>
+      <p class="count" id="count" aria-live="polite"></p>
+    </form>
+
+    <div class="table-wrap">
+      <table id="orders">
+        <caption>Danh sách đơn hàng tuần 44</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="sel"><input type="checkbox" id="all" aria-label="Chọn tất cả đơn đang hiển thị"></th>
+            <th scope="col" aria-sort="descending"><button type="button" data-sort="code">Mã đơn <span aria-hidden="true">↓</span></button></th>
+            <th scope="col">Khách</th>
+            <th scope="col">Sản phẩm</th>
+            <th scope="col">Mẻ rang</th>
+            <th scope="col" class="right" aria-sort="none"><button type="button" data-sort="total">Tổng</button></th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Hạn giao</th>
+            <th scope="col" class="act"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Thao tác</span></th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr data-status="cho-dong-goi" data-batch="42" data-total="370000" data-code="DH-1048">
+          <td class="sel"><input type="checkbox" id="c-DH-1048" aria-label="Chọn đơn DH-1048"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1048" class="num">DH-1048</a></th>
+          <td data-label="Khách">Nguyễn Thị Hồng Nhung</td>
+          <td data-label="Sản phẩm">Cầu Đất × 2</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=42" class="num">Mẻ 42</a> <span class="muted">· 27/10</span></td>
+          <td data-label="Tổng" class="right num">370.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status warn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v5M8 11.5v.5"/><circle cx="8" cy="8" r="6.5"/></svg>Chờ đóng gói</span></td>
+          <td data-label="Hạn giao" class="">Hôm nay 17:00</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1048" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="cho-dong-goi" data-batch="44" data-total="590000" data-code="DH-1047">
+          <td class="sel"><input type="checkbox" id="c-DH-1047" aria-label="Chọn đơn DH-1047"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1047" class="num">DH-1047</a></th>
+          <td data-label="Khách">Trần Quốc Bảo</td>
+          <td data-label="Sản phẩm">Gói tháng · Khe Sanh 1 kg</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=44" class="num">Mẻ 44</a> <span class="muted">· 27/10</span></td>
+          <td data-label="Tổng" class="right num">590.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status warn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v5M8 11.5v.5"/><circle cx="8" cy="8" r="6.5"/></svg>Chờ đóng gói</span></td>
+          <td data-label="Hạn giao" class="">Hôm nay 17:00</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1047" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="cho-dong-goi" data-batch="43" data-total="425000" data-code="DH-1046">
+          <td class="sel"><input type="checkbox" id="c-DH-1046" aria-label="Chọn đơn DH-1046"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1046" class="num">DH-1046</a></th>
+          <td data-label="Khách">Lê Minh Châu</td>
+          <td data-label="Sản phẩm">Măng Đen × 1, Đắk Hà × 2</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=43" class="num">Mẻ 43</a> <span class="muted">· 27/10</span></td>
+          <td data-label="Tổng" class="right num">425.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status warn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 4v5M8 11.5v.5"/><circle cx="8" cy="8" r="6.5"/></svg>Chờ đóng gói</span></td>
+          <td data-label="Hạn giao" class="">Hôm nay 17:00</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1046" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="da-dong-goi" data-batch="44" data-total="495000" data-code="DH-1045">
+          <td class="sel"><input type="checkbox" id="c-DH-1045" aria-label="Chọn đơn DH-1045"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1045" class="num">DH-1045</a></th>
+          <td data-label="Khách">Phạm Gia Huy</td>
+          <td data-label="Sản phẩm">Khe Sanh × 3</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=44" class="num">Mẻ 44</a> <span class="muted">· 27/10</span></td>
+          <td data-label="Tổng" class="right num">495.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status neutral"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="4.5" width="11" height="8" rx="1"/><path d="M2.5 7.5h11"/></svg>Đã đóng gói</span></td>
+          <td data-label="Hạn giao" class="">Hôm nay 19:00</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1045" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="dang-giao" data-batch="42" data-total="185000" data-code="DH-1044">
+          <td class="sel"><input type="checkbox" id="c-DH-1044" aria-label="Chọn đơn DH-1044"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1044" class="num">DH-1044</a></th>
+          <td data-label="Khách">Võ Ngọc Ánh</td>
+          <td data-label="Sản phẩm">Cầu Đất × 1</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=42" class="num">Mẻ 42</a> <span class="muted">· 27/10</span></td>
+          <td data-label="Tổng" class="right num">185.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status accent"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 5.5h8v6h-8zM9.5 7.5h3l2 2v2h-5"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/></svg>Đang giao</span></td>
+          <td data-label="Hạn giao" class="">30/10</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1044" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="giao-loi" data-batch="38" data-total="500000" data-code="DH-1041">
+          <td class="sel"><input type="checkbox" id="c-DH-1041" aria-label="Chọn đơn DH-1041"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1041" class="num">DH-1041</a></th>
+          <td data-label="Khách">Đặng Thu Trang</td>
+          <td data-label="Sản phẩm">Đắk Hà × 4</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=38" class="num">Mẻ 38</a> <span class="muted">· 20/10</span><span class="stale">Hạt 8 ngày</span></td>
+          <td data-label="Tổng" class="right num">500.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status danger"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 14.5 13.5h-13z"/><path d="M8 6v3.5M8 11.3v.4"/></svg>Giao lỗi</span></td>
+          <td data-label="Hạn giao" class="late">Quá hạn 1 ngày</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1041" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="da-giao" data-batch="38" data-total="320000" data-code="DH-1039">
+          <td class="sel"><input type="checkbox" id="c-DH-1039" aria-label="Chọn đơn DH-1039"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1039" class="num">DH-1039</a></th>
+          <td data-label="Khách">Bùi Anh Khoa</td>
+          <td data-label="Sản phẩm">Gói 2 tuần · Cầu Đất, Măng Đen</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=38" class="num">Mẻ 38</a> <span class="muted">· 20/10</span></td>
+          <td data-label="Tổng" class="right num">320.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status muted"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.5 3 3 7-7"/></svg>Đã giao</span></td>
+          <td data-label="Hạn giao" class="">24/10</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1039" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        <tr data-status="da-giao" data-batch="38" data-total="350000" data-code="DH-1036">
+          <td class="sel"><input type="checkbox" id="c-DH-1036" aria-label="Chọn đơn DH-1036"></td>
+          <th scope="row" class="code"><a href="don-hang.html?ma=DH-1036" class="num">DH-1036</a></th>
+          <td data-label="Khách">Hoàng Mỹ Linh</td>
+          <td data-label="Sản phẩm">Măng Đen × 2</td>
+          <td data-label="Mẻ rang" class="batch"><a href="lo-rang.html?me=38" class="num">Mẻ 38</a> <span class="muted">· 20/10</span></td>
+          <td data-label="Tổng" class="right num">350.000&nbsp;₫</td>
+          <td data-label="Trạng thái"><span class="status muted"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8.5 3 3 7-7"/></svg>Đã giao</span></td>
+          <td data-label="Hạn giao" class="">23/10</td>
+          <td class="act"><button type="button" class="icon-btn" aria-label="Thao tác cho đơn DH-1036" aria-haspopup="menu"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="empty" id="empty" hidden><p>Không có đơn nào khớp bộ lọc.</p><button type="button" class="btn" id="clear">Xoá bộ lọc</button></div>
+    </div>
+
+    <div class="bulk" id="bulk" role="region" aria-label="Thao tác hàng loạt">
+      <span id="bulk-count"></span>
+      <button type="button" class="btn" id="mark-packed">Đánh dấu đã đóng gói</button>
+      <button type="button" class="btn">In phiếu giao</button>
+    </div>
+    <div class="pager"><span class="num">1–8 trên 138 đơn</span><span><button type="button" class="btn" disabled aria-disabled="true">Trang trước</button> <button type="button" class="btn">Trang sau</button></span></div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-text"></span><button type="button" class="btn-link" id="undo">Hoàn tác</button></div>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const rows = $$('#orders tbody tr'), q = $('#q'), st = $('#status'), bt = $('#batch');
+  const LABEL = {"cho-dong-goi": "Chờ đóng gói", "da-dong-goi": "Đã đóng gói", "dang-giao": "Đang giao", "giao-loi": "Giao lỗi", "da-giao": "Đã giao"};
+  const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+  function apply(push) {
+    const term = fold(q.value.trim());
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!st.value || r.dataset.status === st.value) && (!bt.value || r.dataset.batch === bt.value) && (!term || fold(r.textContent).includes(term));
+      r.hidden = !ok; if (ok) n++;
+    }
+    $('#count').textContent = `${n} đơn đang hiển thị`;
+    $('#empty').hidden = n > 0;
+    if (push) {
+      const p = new URLSearchParams();
+      if (q.value) p.set('q', q.value); if (st.value) p.set('status', st.value); if (bt.value) p.set('batch', bt.value);
+      history.replaceState(null, '', p.toString() ? `?${p}` : location.pathname);
+    }
+    syncSel();
+  }
+  const p = new URLSearchParams(location.search);
+  q.value = p.get('q') || ''; st.value = p.get('status') || ''; bt.value = p.get('batch') || '';
+  [q, st, bt].forEach((el) => el.addEventListener('input', () => apply(true)));
+  $$('[data-quick]').forEach((b) => b.addEventListener('click', () => { st.value = b.dataset.quick; apply(true); st.focus(); }));
+  $('#clear').addEventListener('click', () => { q.value = ''; st.value = ''; bt.value = ''; apply(true); q.focus(); });
+
+  function syncSel() {
+    const vis = rows.filter((r) => !r.hidden), chosen = vis.filter((r) => $('input', r).checked);
+    rows.forEach((r) => r.classList.toggle('is-selected', $('input', r).checked));
+    $('#all').checked = vis.length > 0 && chosen.length === vis.length;
+    $('#all').indeterminate = chosen.length > 0 && chosen.length < vis.length;
+    $('#bulk').classList.toggle('on', chosen.length > 0);
+    $('#bulk-count').textContent = `Đã chọn ${chosen.length} đơn`;
+  }
+  rows.forEach((r) => $('input', r).addEventListener('change', syncSel));
+  $('#all').addEventListener('change', (e) => { rows.filter((r) => !r.hidden).forEach((r) => ($('input', r).checked = e.target.checked)); syncSel(); });
+
+  let undoState = null, timer = null;
+  const toast = $('#toast');
+  function setStatus(r, s) {
+    r.dataset.status = s;
+    const tone = { 'cho-dong-goi': 'warn', 'da-dong-goi': 'neutral', 'dang-giao': 'accent', 'giao-loi': 'danger', 'da-giao': 'muted' }[s];
+    const el = $('.status', r); el.className = `status ${tone}`; el.lastChild.textContent = LABEL[s];
+  }
+  $('#mark-packed').addEventListener('click', () => {
+    const chosen = rows.filter((r) => !r.hidden && $('input', r).checked);
+    undoState = chosen.map((r) => [r, r.dataset.status]);
+    chosen.forEach((r) => { setStatus(r, 'da-dong-goi'); $('input', r).checked = false; });
+    apply(false);
+    $('#toast-text').textContent = `Đã đánh dấu ${chosen.length} đơn là đã đóng gói.`;
+    toast.classList.add('on'); clearTimeout(timer); timer = setTimeout(() => toast.classList.remove('on'), 12000);
+  });
+  toast.addEventListener('mouseenter', () => clearTimeout(timer));
+  toast.addEventListener('focusin', () => clearTimeout(timer));
+  $('#undo').addEventListener('click', () => { (undoState || []).forEach(([r, s]) => setStatus(r, s)); undoState = null; toast.classList.remove('on'); apply(false); });
+
+  $$('[data-sort]').forEach((b) => b.addEventListener('click', () => {
+    const th = b.closest('th'), dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+    $$('#orders thead th[aria-sort]').forEach((h) => { h.setAttribute('aria-sort', 'none'); const a = $('span[aria-hidden]', h); if (a) a.remove(); });
+    th.setAttribute('aria-sort', dir); b.insertAdjacentHTML('beforeend', `<span aria-hidden="true">${dir === 'ascending' ? '↑' : '↓'}</span>`);
+    const key = b.dataset.sort, tb = $('#orders tbody');
+    rows.sort((x, y) => { const a = key === 'total' ? +x.dataset.total : x.dataset.code, c = key === 'total' ? +y.dataset.total : y.dataset.code; return (a > c ? 1 : a < c ? -1 : 0) * (dir === 'ascending' ? 1 : -1); }).forEach((r) => tb.appendChild(r));
+  }));
+  apply(false);
+})();
+</script>
+</body>
+</html>

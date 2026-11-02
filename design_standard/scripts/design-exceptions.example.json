@@ -1,0 +1,11 @@
+[
+  {
+    "id": "EX-001",
+    "finding": "admin-order-detail|target-size|button \"Sắp xếp\"",
+    "severity": "minor",
+    "reason": "Thư viện bảng giới hạn tiêu đề 36px; menu Sắp xếp 44px ở thanh công cụ làm cùng việc",
+    "owner": "@product-owner",
+    "expires": "2027-01-31",
+    "approvalRef": "https://github.com/example/project/issues/123"
+  }
+]

@@ -1,42 +1,37 @@
 # 07 · Sinh trước, gọt sau — kiểm soát "nét AI"
 
-> **2.9 (30/10/2026):** bản mẫu Stitch sinh từ `DESIGN.md` xuất từ token của hướng (12 §5.1 bước 5), không để Stitch tự đoán màu. **2.8 (30/10/2026):** bảng tham chiếu, hướng đã chọn, sự thật đã kiểm thành **file cổng** (`design-gates/`, máy kiểm có/không); thêm S-06…S-09 (mẫu trang trí khuôn sáo, có liều); sổ gu người dùng. **2.7 (30/10/2026):** bảng tham chiếu trang thật là **điều kiện trước** khi sinh bản mẫu cho E2–E3 (thiếu = T13 trượt); bảng màu rút từ ảnh đề tài (04 §3); bộ hiệu ứng dùng lại (06 §6). Lý do: người dùng "hiệu ứng… di chuột vẫn còn đơn điệu… thô… màu sắc… chưa phù hợp với đề tài" — agent đã bỏ qua luật bảng tham chiếu của 2.5 và tự đoán. **2.6 (30/10/2026):** T13 chấm cả **độ động** (cảnh 3D ≥ 2 kiểu phản hồi, 06 §6) và **độ phong phú màu** (≥ 1 màu nhấn phụ + dải màu thương hiệu, 04 §3); G2 của trang E3 trình kèm **bản chạy được** (link hoặc video ngắn), không chỉ ảnh tĩnh. Lý do: người dùng "cần hiệu ứng 3D động hơn nữa, màu sắc vẫn còn hơi đơn điệu". **2.5 (30/10/2026):** thêm T13 "độ hoàn thiện hình ảnh" (bản dựng không được kém bản mẫu về ảnh, ánh sáng, chuyển cảnh); nới D-02 cho ảnh minh hoạ có chú thích; nguồn tài nguyên thật ở 12 §5.5. Lý do: người dùng chê 3 landing E3 của lần chạy thử 2.4 "màu sắc, hiệu ứng, chuyển cảnh, hình ảnh còn quá thô". **2.4 (30/10/2026):** bản mẫu phải **cùng loại trang** (§2 bước 1); bảng vai trò khối đối chiếu với **ảnh làm mờ sau khi dựng** (§2 bước 4, T3); G2-09d phủ cả **nhãn hành động**. **2.3 (29/10/2026):** bảng gọt chấm cả **vai trò khối** (§2), thêm bậc cấm "suy diễn quá dữ liệu" (G2-09d). **2.2 (29/10/2026):** đổi từ "loại bỏ mọi nét AI" sang **"sinh trước, gọt sau"** theo yêu cầu người dùng, sau khi dùng thật cho ra giao diện quá thô (CHANGELOG 2.1 "Dùng thật tiếp"). Hiệu lực tạm, chờ người thật duyệt.
+Lịch sử và lý do thay đổi nằm trong [CHANGELOG.md](CHANGELOG.md); file này chỉ giữ quy tắc đang áp dụng.
 
 ## 1. Định nghĩa
 
-**AI slop** là giao diện mà các lựa chọn dễ thấy đều là mặc định **dùng quá liều** hoặc **gian dối** — không phải giao diện có dùng mặc định.
+**AI slop** là mặc định bị dùng quá liều, nội dung gian dối, hoặc màn cần nhận diện nhưng giống nguyên template. Bo góc, khoảng trắng, phân cấp, nhãn màu nhạt và phản hồi thao tác không tự động là slop.
 
-- Phần lớn điều công cụ AI đề xuất là **tốt**: bo góc mềm, khoảng trắng rộng, phân cấp rõ, nhãn màu nhạt, phản hồi khi thao tác. Đó là quy ước hiện đại, người dùng quen và thấy dễ chịu. **Giữ chúng.**
-- Slop là khi: (a) có **dữ liệu, lời chứng thực, người dùng bịa** hoặc chữ kỹ thuật lộ ra — luôn sai; (b) một kỹ thuật trang trí bị **dùng quá liều** (gradient khắp nơi, kính mờ mọi bề mặt, mọi khối cùng một card); (c) chỗ cần nhận diện (trang chủ, landing) trông **giống hệt template** của chính công cụ.
-- Gọt không phải triệt tiêu. **Mỗi thứ bỏ đi phải được thay bằng một quyết định có lý do** (§3, luật "bớt phải thay"); bỏ mà để trống là sửa quá tay (§6).
+Gọt là giảm liều và thay bằng quyết định có lý do, không phải xoá sạch. Bỏ một chức năng hoặc điểm nhấn mà không chuyển vai trò cho chỗ khác là sửa quá tay (§3, §6).
 
 ## 2. Quy trình: sinh → chấm → gọt → dựng
 
 Áp ở chặng 2 của [01](01_QUY_TRINH.md) (thiết kế mới) và nhóm b2 của [11](11_DANH_GIA_VA_CAI_THIEN.md) (cải thiện màn có sẵn).
 
-1. **Sinh** bản mẫu từ brief (đã bỏ dữ liệu nhạy cảm): ≥ 2 bản; E0–E1 làn M: 1 bản là đủ. Dùng công cụ sinh có sẵn theo [12 §2](12_BAN_DO_CONG_CU.md#2-luồng-thiết-kế-mới-01): Stitch, block/theme shadcn, gợi ý ngành của ui-ux-pro-max, hoặc agent dựng nhanh bằng thư viện component. Không dùng được Stitch (không được phép gửi ra ngoài, chạy không tương tác): dùng block/theme shadcn, ui-ux-pro-max hoặc agent dựng nhanh, ghi lý do. **Bản mẫu phải cùng loại trang** (03 `type`) với màn đang thiết kế (2.4): công cụ sinh hỏng hoặc hết lượt thì agent dựng nhanh một bản mẫu đúng loại bằng thư viện component (block shadcn gần nhất + nội dung thật), không mượn bản mẫu của màn khác loại — T12 không so được trang chi tiết với ảnh mẫu trang danh sách. E2–E3 (2.5; 2.7: **làm trước khi sinh bản mẫu**, nộp kèm thẻ hướng, thiếu thì T13 trượt; 2.8: ghi vào `design-gates/tham-chieu.md` kèm ảnh ghép `scripts/ref_board.mjs` — chụp và nhìn tận mắt, không tham chiếu theo trí nhớ): kèm **bảng tham chiếu ≥ 3 trang thật cùng loại** (Awwwards, Godly, trang sản phẩm thật) ghi học được gì về ảnh, ánh sáng, chuyển cảnh — bản mẫu AI không đủ làm thước đo "ấn tượng". Nội dung là **nội dung thật**; dữ liệu công cụ tự bịa (số liệu, tên người, ảnh người, giấy phép) thay bằng dữ liệu thật hoặc `[CẦN NỘI DUNG: …]`.
+1. **Sinh:** từ brief đã bỏ dữ liệu nhạy cảm, tạo ≥ 2 bản; E0–E1 làn M được 1 bản. Dùng công cụ ở [12 §2](12_BAN_DO_CONG_CU.md#2-luồng-thiết-kế-mới-01); không dùng được Stitch thì dùng shadcn/ui-ux-pro-max hoặc dựng nhanh bằng component và ghi lý do. Bản mẫu phải cùng `type` (03), dùng nội dung thật; chỗ thiếu ghi `[CẦN NỘI DUNG: …]`. E2–E3 phải **trước khi sinh**: tạo `design-gates/tham-chieu.md`, dùng `scripts/ref_board.mjs` chụp/nhìn thật ≥ 3 trang cùng loại, nêu bài học về ảnh, ánh sáng, chuyển cảnh và nộp cùng thẻ hướng; không tham chiếu theo trí nhớ. Stitch nhận `DESIGN.md` xuất từ token của hướng, không tự đoán màu. Thiếu các bằng chứng này thì T13 trượt; G2 của E3 phải có link chạy được hoặc video ngắn.
 2. **Chấm** bằng **bảng gọt** — **một bảng cho mỗi hướng**, ghi bản mẫu nguồn ([10 §2](10_MAU.md#2-thẻ-hướng-thị-giác)):
    - mỗi dấu hiệu §4 có trong bản: bậc (cấm / tiết chế / tự do), liều hiện tại, quyết định (giữ · giảm liều · bỏ và thay bằng …);
    - **mỗi khối của bản mẫu** (2.3): khối đó làm gì cho tác vụ nào, có phải **điểm nhấn** không, quyết định (giữ · đổi · bỏ). Bỏ một khối là điểm nhấn hoặc là việc cần xử lý (cảnh báo, việc chờ) thì phải chuyển vai trò đó cho khối khác — ghi khối nào nhận;
    - **≥ 3 điểm tốt cần giữ** (thân thiện, hiện đại, thuận mắt) — bắt buộc, để không gọt sạch.
 3. **Gọt:** bỏ mọi dấu hiệu bậc **cấm**; đưa dấu hiệu bậc **tiết chế** về trong liều; giữ bậc **tự do**. Chỗ bỏ đi thay bằng thứ có chức năng hoặc gắn với nội dung (màu nhấn theo ngành, nhãn trạng thái, ảnh sản phẩm thật…).
-4. **Dựng bằng mã thật** với token dự án, chụp theo ma trận [03B §0](03B_NEN_TANG_THIET_BI.md#0-ma-trận-kích-thước-kiểm-định). **Đối chiếu bảng vai trò khối với ảnh làm mờ 8px** của bản đã dựng (2.4; `audit.mjs` tự xuất `*_T3-blur8.png`): khối ghi là điểm nhấn phải là thứ nổi nhất ở ảnh mờ; không phải thì sửa giao diện (cỡ, độ đậm, màu, vị trí) trước khi trình — đổi vai trò trên giấy mà ảnh không đổi là chưa gọt xong. Bản mẫu do công cụ sinh không trình ở G2 như một hướng; bản đã gọt và dựng lại thì trình.
+4. **Dựng:** dùng mã thật và token dự án; chụp theo [03B §0](03B_NEN_TANG_THIET_BI.md#0-ma-trận-kích-thước-kiểm-định). Ở ảnh `*_T3-blur8.png`, khối ghi là điểm nhấn phải nổi nhất; nếu không, sửa cỡ/đậm/màu/vị trí trước khi trình. G2 chỉ nhận bản đã gọt và dựng lại, không nhận bản sinh thô.
 5. **Dò mặc định:** đặt bản đã gọt cạnh một bản sinh **không ràng buộc** (prompt chỉ có loại trang + ngành, không màu, không thương hiệu — không phải bản mẫu nguồn đã chỉnh prompt). Giống bản đó ở cả màu nhấn, font và bố cục → ghi "rủi ro mặc định" trong thẻ hướng. E0–E1: chỉ ghi, PO quyết. E2–E3 và sản phẩm làn L: thêm ít nhất một quyết định đặc trưng (§5).
 
 ## 3. Lý do hợp lệ
 
 Chỉ cần lý do cho: dấu hiệu bậc tiết chế **vượt liều**, quyết định đặc trưng (E2–E3), và đổi hướng thị giác. Bậc tự do và tiết chế trong liều không cần lý do.
 
-**Lý do hợp lệ** dẫn tới một trong:
-- dòng brief **đã được PO xác nhận** (người dùng, bối cảnh, tác vụ, thương hiệu);
-- **PO chọn giữa ≥ 2 hướng có ảnh** (G2), hoặc **PO xác nhận hướng b2 có ảnh** (11 §4) — chỉ là lý do cho **màu, font, bề mặt** khi chưa có thương hiệu; dấu hiệu vượt liều khác phải ghi trong bảng gọt **và** có trong ảnh PO đã xem; thẻ hướng ghi rủi ro DF nếu có;
-- tham chiếu có link/ảnh trong bảng tham chiếu, ghi rõ học được gì;
-- hệ thiết kế của sản phẩm **đã qua G2**;
-- quy ước có tên và nguồn **có thẩm quyền**: tiêu chuẩn (ISO, WCAG, TCVN…), cơ quan quản lý, hướng dẫn chính thức của nền tảng hoặc hệ thiết kế lớn đang được dùng rộng (Material 3, Apple HIG, Fluent 2, mẫu hành vi của Radix/shadcn) — dùng cho cấu trúc, hành vi và các chi tiết thân thiện (bo góc, pill, toast, ngăn bên…).
+**Lý do hợp lệ** phải trỏ tới một nguồn: brief PO đã xác nhận; hướng có ảnh PO chọn ở G2 (chỉ biện minh màu/font/bề mặt khi chưa có thương hiệu); bảng tham chiếu có link/ảnh và bài học cụ thể; hệ thiết kế đã qua G2; hoặc tiêu chuẩn/hướng dẫn có thẩm quyền (ISO, WCAG, TCVN, Material, Apple HIG, Fluent, Radix/shadcn) **cho cấu trúc, hành vi và chi tiết thân thiện**, không phải giấy phép cho trang trí vượt liều.
+
+Dấu hiệu vượt liều khác vẫn phải xuất hiện trong bảng gọt và trong ảnh PO đã xem; thẻ hướng ghi rủi ro DF.
 
 "Hiện đại", "đẹp", "AI đề xuất" đứng một mình vẫn không phải lý do cho thứ **vượt liều**. Lý do dẫn tới dòng "Giả định" = không có lý do.
 
-**Luật "bớt phải thay":** khi gọt một dấu hiệu **hoặc một khối**, ghi trong bảng gọt thứ thay vào (hoặc "không cần thay" kèm lý do). Áp cho **chức năng và điểm nhấn**, không chỉ trang trí: bỏ khối cảnh báo của bản mẫu mà không khối nào nhận vai trò đó = gọt quá tay (lần chạy thử 2.2: T3 trượt vì lý do này). Một vòng sửa mà chỉ bỏ, không thay, làm màn hình nhạt hơn bản mẫu ở ảnh làm mờ → người duyệt ghi phát hiện "gọt quá tay" (§6).
+**Luật "bớt phải thay":** mỗi dấu hiệu hoặc khối bị bỏ phải ghi thứ thay vào, hoặc "không cần thay" kèm lý do. Luật áp cho chức năng và điểm nhấn, không chỉ trang trí. Vòng sửa chỉ bỏ và làm ảnh mờ phẳng hơn bản mẫu là "gọt quá tay" (§6).
 
 ## 4. Danh mục dấu hiệu theo bậc
 

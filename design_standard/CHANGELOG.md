@@ -6,6 +6,7 @@
 - `docs/REFERENCE_MAP.md` trở thành nguồn phân loại/điều hướng đầy đủ; kiểm tra tài liệu xác nhận phiên bản, nhãn phân loại và kích thước điểm vào.
 - Cô đọng 07/11 về quy tắc đang áp dụng; chuyển 35 phản hồi gu cũ nguyên vẹn sang archive để không bị nạp như policy dự án mới.
 - Chắt lọc 35 phản hồi thành hồ sơ gu theo loại trang/component, kèm nguồn, độ tin cậy và điều kiện xử lý các cặp 3D/static, light/dark, motion/stability.
+- Nhập GU-36–49 từ thử nghiệm garage vào archive và bổ sung gu có điều kiện về 3D có nghĩa, hero hoàn chỉnh, nhịp section, full-bleed, header/footer, palette dịu và luồng đặt lịch tách trang.
 - `uiRoots` thay bộ lọc phần mở rộng: mọi file UI trong phạm vi phải thuộc ít nhất một screen.
 - `stateCoverage` buộc inventory loading/empty/error/dialog hoặc lý do không áp dụng.
 - W8 phát hiện chuyển động hình học dài/lặp khi reduced motion; W19 chứng minh motion-token và cleanup sau dispose.
